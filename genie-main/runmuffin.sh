@@ -12,7 +12,7 @@ echo ""
 # CHANGE THIS FOR INSTALLATIONS OTHER THAN IN $HOME
 # SET THE SAME AS IN user.mak AND user.sh
 # set home directory
-HOMEDIR=$HOME
+HOMEDIR=/scratch/local1/u246035/cGENIE/EMBM
 #####################################################################
 # set output directory
 OUTPUTDIR=$HOMEDIR/cgenie_output
@@ -23,7 +23,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/share/apps/lib
 # also ifort ...
 export PATH=/state/partition1/apps/intel/bin:$PATH
 # ensure stack size is adequate
-ulimit -s 20480
+ulimit -s unlimited
 #
 # (1) GET PASSED PARAMETERS
 # -------------------------

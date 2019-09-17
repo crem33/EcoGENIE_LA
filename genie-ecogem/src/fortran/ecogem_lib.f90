@@ -188,7 +188,7 @@ MODULE ecogem_lib
   ! ------------------- DATA SAVING: TIME-SERIES --------------------------------------------------------------------------------- !
   LOGICAL::ctrl_data_save_timeseries                           ! time-series data save: e.g. JGOFS  
   NAMELIST /ini_ecogem_nml/ ctrl_data_save_timeseries
-  ! ------------------- TEST" !--------------------------------------------------------------------------------------------------- !
+  !-------------------- TEST" !--------------------------------------------------------------------------------------------------- !
   logical::ctrl_hello_world                                             ! hello world!
   NAMELIST /ini_ecogem_nml/ctrl_hello_world
 

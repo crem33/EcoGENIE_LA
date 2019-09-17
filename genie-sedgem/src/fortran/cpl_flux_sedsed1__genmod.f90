@@ -1,0 +1,19 @@
+        !COMPILER-GENERATED INTERFACE MODULE: Mon Sep 16 15:59:56 2019
+        ! This source file is for reference only and may not completely
+        ! represent the generated interface used by the compiler.
+        MODULE CPL_FLUX_SEDSED1__genmod
+          INTERFACE 
+            SUBROUTINE CPL_FLUX_SEDSED1(DUM_N_MAXSED,DUM_N_MAXI,        &
+     &DUM_N_MAXJ,DUM_NS_MAXI,DUM_NS_MAXJ,DUM_SFXSUMSED,DUM_SFXSUMSED1)
+              INTEGER(KIND=4), INTENT(IN) :: DUM_NS_MAXJ
+              INTEGER(KIND=4), INTENT(IN) :: DUM_NS_MAXI
+              INTEGER(KIND=4), INTENT(IN) :: DUM_N_MAXJ
+              INTEGER(KIND=4), INTENT(IN) :: DUM_N_MAXI
+              INTEGER(KIND=4), INTENT(IN) :: DUM_N_MAXSED
+              REAL(KIND=8), INTENT(INOUT) :: DUM_SFXSUMSED(DUM_N_MAXSED,&
+     &DUM_NS_MAXI,DUM_NS_MAXJ)
+              REAL(KIND=8), INTENT(INOUT) :: DUM_SFXSUMSED1(DUM_N_MAXSED&
+     &,DUM_N_MAXI,DUM_N_MAXJ)
+            END SUBROUTINE CPL_FLUX_SEDSED1
+          END INTERFACE 
+        END MODULE CPL_FLUX_SEDSED1__genmod

@@ -1,0 +1,447 @@
+<job author="Rémy Asselot">
+	<vars>
+		<var name="EXPID">RA-3P3Z</var> <!-- Experiment name. A directory with this name will be created and all output piped into this directory -->
+	</vars>
+	<config>
+		<model name="goldstein"/>          <!-- include the module goldstein -->
+		<model name="goldsteinseaice"/>    <!-- include the module goldsteinseaice -->
+		<model name="plasim"/>             <!-- include the module plasim-ents -->
+		<model name="biogem"/>             <!-- include the module biogem -->
+		<model name="atchem"/>             <!-- include the module atchem -->
+                <model name="ecogem"/>             <!-- include the module ecogem -->
+	</config>
+	<build>
+		<make-arg name="IGCMATMOSDP">TRUE</make-arg>              <!-- atmosphere double precision (for compiler)-->
+		<make-arg name="GENIEDP">TRUE</make-arg>                  <!-- genie double precision (for compiler) -->
+		<macro handle="GENIENXOPTS" status="defined">
+			<identifier>GENIENX</identifier>
+			<replacement>64</replacement>                     <!-- atmosphere resolution in longitude -->
+		</macro>
+		<macro handle="GENIENYOPTS" status="defined">
+			<identifier>GENIENY</identifier>
+			<replacement>32</replacement>                     <!-- atmosphere resolution in latitude -->
+		</macro>
+                <macro handle="GENIENLOPTS" status="defined">
+                        <identifier>-DGENIENL</identifier>
+                        <replacement>1</replacement>
+                </macro>
+		<macro handle="GOLDSTEINNLONSOPTS" status="defined">
+			<identifier>GOLDSTEINNLONS</identifier>
+			<replacement>64</replacement>                     <!-- ocean resolution in longitude -->
+		</macro>
+		<macro handle="GOLDSTEINNLATSOPTS" status="defined">
+			<identifier>GOLDSTEINNLATS</identifier>
+			<replacement>32</replacement>                     <!-- ocean resolution in latitude -->
+		</macro>
+		<macro handle="GOLDSTEINNLEVSOPTS" status="defined">
+			<identifier>GOLDSTEINNLEVS</identifier>
+			<replacement>32</replacement>                     <!-- ocean resolution in depth -->
+		</macro>
+		<macro handle="GOLDSTEINNTRACSOPTS" status="defined">
+			<identifier>GOLDSTEINNTRACS</identifier>
+			<replacement>14</replacement>
+		</macro>
+                <macro handle="SEDGEMNLONSOPTS" status="defined">
+                        <identifier>SEDGEMNLONS</identifier>
+                        <replacement>64</replacement>
+                </macro>
+                <macro handle="SEDGEMNLATSOPTS" status="defined">
+                  <identifier>SEDGEMNLATS</identifier>
+                  <replacement>32</replacement>
+                </macro>
+                <macro handle="ROKGEMNLONSOPTS" status="defined">
+                        <identifier>ROKGEMNLONS</identifier>
+                        <replacement>64</replacement>
+                </macro>
+                <macro handle="ROKGEMNLATSOPTS" status="defined">
+                  <identifier>ROKGEMNLATS</identifier>
+                  <replacement>32</replacement>
+                </macro>
+	</build>
+	<parameters>
+		<control>
+			<param name="koverall_total">5760000</param> <!--total length of simulation, defined by the number of atmosphere timesteps
+			                                                  plasim has a timestep of 45 minutes = 32 timesteps per day, with 360 model days per year
+			                                                  => 32*360*1000=11,520,000 --> <!-- 1000 years -->
+                        <param name="genie_timestep">2739.375</param>     <!--atmosphere time step in seconds = 365.25*24*60*60/11520 nb 365.25 day year-->
+			<param name="kocn_loop">16</param>            <!-- gearing of ocean (number of atmosphere timesteps per ocean timestep) = 16*45 minutes = 12 hours -->
+			<param name="ksic_loop">16</param>            <!-- gearing of sea ice (number of atmosphere timesteps per sea-ice timestep) = 16*45 minutes = 12 hours -->
+
+                        <param name="conv_kocn_katchem">4</param>
+                        <param name="conv_kocn_kbiogem">4</param>
+                        <param name="conv_kocn_krokgem">4</param>
+                        <param name="conv_kocn_ksedgem">96</param> 
+                        <param name="conv_kocn_kecogem">4</param> 
+                        <param name="kgemlite">96</param>
+                        <param name="dt_write">480</param> 
+                        <param name="debug_loop">1</param>
+                        <param name="par_grid_lon_offset">-2.8125</param>
+                        <paramArray name="ocn_select">
+                                <param index="3">.true.</param>
+                                <param index="4">.true.</param>
+                                <param index="8">.true.</param>
+                                <param index="10">.true.</param>
+                                <param index="12">.true.</param>
+                                <param index="15">.true.</param>
+                                <param index="16">.true.</param>
+                                <param index="20">.true.</param>
+                                <param index="22">.true.</param>
+                                <param index="35">.true.</param>
+                                <param index="42">.true.</param>
+                                <param index="90">.true.</param>
+                        </paramArray>
+                        <paramArray name="atm_select">
+                                <param index="3">.true.</param>
+                                <param index="4">.true.</param>
+                                <param index="6">.true.</param>
+                        </paramArray>
+                        <paramArray name="sed_select">
+                                <param index="3">.true.</param>
+                                <param index="4">.true.</param>
+                                <param index="8">.true.</param>
+                                <param index="10">.true.</param>
+                                <param index="13">.true.</param>
+                                <param index="14">.true.</param>
+                                <param index="15">.true.</param>
+                                <param index="21">.true.</param>
+                                <param index="22">.true.</param>
+                                <param index="25">.true.</param>
+                                <param index="32">.true.</param>
+                                <param index="33">.true.</param>
+                                <param index="34">.true.</param>
+                                <param index="36">.true.</param>
+                        </paramArray>
+                        <param name="lrestart_genie">.true.</param>
+                        <param name="fname_restart_main">
+                                <sep/>
+                                scratch
+                                <sep/>
+                                uni
+                                <sep/>
+                                u234
+                                <sep/>
+                                u236002
+                                <sep/>
+                                CGENIE_REMY2
+                                <sep/>
+                                cgenie_output
+                                <sep/>
+                                XXXX
+                                <sep/>
+                                main
+                                <sep/>
+                                _restart.dat
+                        </param> 
+		</control>
+		<model name="goldstein">
+			<param name="igrid">2</param>                 <!-- igrid==2 switch to tell goldstein we are using T21 latitude spacing  -->
+			<param name="yearlen">360</param>             <!-- goldstein year length in days. We apply a 360 day year. -->>
+			<param name="nyear">720</param>               <!-- number of goldstein time steps per year. i.e. 12 hour timestep, 360 day year -->
+			<param name="iwstp">72000</param>             <!-- goldstein restart output frequency in goldstein timesteps. 100 years -->
+			<param name="ianav">7200</param>              <!-- goldstein output frequency for 3D fields. 10 years -->
+			<param name="itstp">7200</param>               <!-- goldstein output frequency for integral diagnostics. 1 year -->
+			<param name="npstp">7200</param>               <!-- goldstein putput frequency for screen diagnostics. 1 year -->
+			<param name="world">pl32_1</param>            <!-- indentifying label for the files that describe the world. These files are:
+			                                                   a file that describes the land-sea mask, runoff routing and ocean bathymetry "/genie/genie-goldstein/data/input/pl32_1.k1"
+			                                                   a file that defines any paths around islands "/genie/genie-goldstein/data/input/pl32_1.paths"
+			                                                     (we here consider only the ACC)
+			                                                   a file that defines the islands separated by these paths "/genie/genie-goldstein/data/input/pl32_1.psiles"
+			                                                     (we here consider only the ACC, so have two islands being Antartica and the rest of the world -->
+			<param name="tdatafile">pl32_tempann.silo</param>  <!-- name of data file of observational ocean temperature field, found in genie/genie-goldtstein/data/input -->
+			<param name="sdatafile">pl32_saliann.silo</param>  <!-- name of data file of observational ocean sainity field, found in genie/genie-goldtstein/data/input -->
+			<param name="temp1">0.0</param>                   <!-- initial ocean temperature in northern hemisphere (degC). When set to less than -2, ocean initialised with observations --> 
+			<param name="temp0">0.0</param>                   <!-- initial ocean temperature in southern hemisphere (degC). When set to less than -2, ocean initialised with observations --> 
+			<paramArray name="diff">
+			   <param index="1">1936.9958</param>              <!-- isopycnal diffusivity (m2s-1) -                         subjectively tuned parameter OHD -->
+			   <param index="2">0.000158338</param>            <!-- diapycnal diffusivity (m2s-1) -                         subjectively tuned parameter OVD -->
+			</paramArray>
+			<param name="adrag">2.0686631</param>              <!-- inverse frictional drag (days) -                        subjectively tuned parameter ADRAG -->
+			<param name="scf">3.788316</param>                 <!-- wind stress scaling (dimensionless) -                   subjectively tuned parameter SCF -->
+			<param name="ediffpow1">0.8200495</param>          <!-- diapycnal diffusivity depth profile (dimensionless) -   subjectively tuned parameter OP1 --> 
+			<param name="ieos">1</param>                       <!-- switch to include thermobaricity in the equation of state (1==on) -->
+			<param name="iediff">1</param>                     <!-- switch to turn on stratification dependent mixing (1==on) -->
+                        <param name="imld">1</param>  
+                        <param name="rstdir_name">
+                                <sep/>
+                                scratch
+                                <sep/>
+                                uni
+                                <sep/>
+                                u234
+                                <sep/>
+                                u236002
+                                <sep/>
+                                CGENIE_REMY2
+                                <sep/>
+                                cgenie_output
+                                <sep/>
+                                XXXX
+                                <sep/>
+                                goldstein
+                        </param>
+                        <param name="lout">rst</param>
+                        <param name="netin">n</param>
+                        <param name="netout">n</param>
+                        <param name="ascout">y</param>
+                        <param name="lin">rst.1</param>
+		</model>
+		<model name="goldsteinseaice">
+			<param name="igrid">2</param>                      <!-- for following parameters see the equivalent desciptions for goldstein -->
+			<param name="nyear">720</param>
+			<param name="iwstp">72000</param>
+			<param name="ianav">7200</param>
+			<param name="npstp">7200</param>
+			<param name="itstp">7200</param>
+			<param name="world">pl32_1</param>
+			<param name="diffsic">15000.</param>              <!-- sea ice diffusivity (m2s-1) - non-default parameter SID -->
+                        <param name="rstdir_name">
+                                <sep/>
+                                scratch
+                                <sep/>
+                                uni
+                                <sep/>
+                                u234
+                                <sep/>
+                                u236002
+                                <sep/>
+                                CGENIE_REMY2
+                                <sep/>
+                                cgenie_output
+                                <sep/>
+                                XXXX
+                                <sep/>
+                                goldsteinseaice
+                        </param>  
+                        <param name="lout">rst</param>
+                        <param name="netin">n</param>
+                        <param name="netout">n</param>
+                        <param name="ascout">y</param>
+                        <param name="lin">rst.1</param>
+		</model>
+		<model name="plasim">
+			<param name="ngear">1</param>
+			<param name="ngear_years_plasim">1</param>
+			<param name="ngear_multiple">10</param>
+			<param name="nafter">115200</param>               <!-- output frequency for averaged plasim-ents fields = 45 minutes * 115200 = 10 years -->
+			<param name="atchem_radfor">.FALSE.</param> 
+			<param name="indir_name"><varref>RUNTIME_ROOT</varref>/genie-plasim/data/input/p32_1</param>
+
+			<param name="albgmax">0.8</param>
+			<param name="qthresh">0.1</param>                 <!-- dimensionless threshold moisture content for photosynthesis - non default parameter QTHRESH -->
+
+			<param name="scale_apm">0.6664018</param>    <!-- dimensionless scaling of the atlantic-pacific moisture flux adjustment - subjectively tuned parameter APM -->
+			<param name="albseamax">0.4</param>               <!-- latitudinal dependence of ocean albedo (dimensionless) - non-default parameter ALBSEAMAX --> 
+                        <param name="co2">280.</param>
+                        <param name="rstdir_name">
+                                <sep/>
+                                scratch
+                                <sep/>
+                                uni
+                                <sep/>
+                                u234
+                                <sep/>
+                                u236002
+                                <sep/>
+                                CGENIE_REMY2
+                                <sep/>
+                                cgenie_output
+                                <sep/>
+                                XXXX
+                                <sep/>
+                                plasim
+                        </param>
+		</model>
+		<model name="atchem">
+                        <paramArray name="atm_init">
+                                <param index="3">278.0E-06</param>
+                                <param index="4">-6.5</param>
+                                <param index="6">0.2095</param>
+                        </paramArray>
+                        <param name="ctrl_continuing">.true.</param>
+                        <param name="ctrl_ncrst">.true.</param>
+                        <param name="par_rstdir_name">
+                                <sep/>
+                                scratch
+                                <sep/>
+                                uni
+                                <sep/>
+                                u234
+                                <sep/>
+                                u236002
+                                <sep/>
+                                CGENIE_REMY2
+                                <sep/>
+                                cgenie_output
+                                <sep/>
+                                XXXX
+                                <sep/>
+                                atchem
+                        </param> 
+		</model>
+                <model name="sedgem">
+                        <param name="par_misc_t_runtime">50</param>
+                        <param name="ctrl_continuing">.true.</param>
+                        <param name="ctrl_ncrst">.true.</param>
+                        <param name="par_rstdir_name">
+                                <sep/>
+                                scratch
+                                <sep/>
+                                uni
+                                <sep/>
+                                u234
+                                <sep/>
+                                u236002
+                                <sep/>
+                                CGENIE_REMY2
+                                <sep/>
+                                cgenie_output
+                                <sep/>
+                                XXXX
+                                <sep/>
+                                sedgem
+                        </param>
+                </model>
+                <model name="ecogem">
+                        <param name="ctrl_debug_eco_init">.true.</param>
+                        <param name="n_keco">1</param>
+                        <param name="nquota">.false.</param>
+                        <param name="pquota">.true.</param>
+                        <param name="fquota">.true.</param>
+                        <param name="chlquota">.true.</param>
+                        <param name="useNO3">.false.</param>
+                        <param name="usePO4">.true.</param>
+                        <param name="useFe">.true.</param>
+                        <param name="qminFe_a">1.0e-6</param>
+                        <param name="qmaxFe_a">4.0e-6</param>
+                        <param name="ns">2</param>
+                        <param name="beta_graz_a">0.8</param>
+                        <param name="beta_graz_b">0.4</param>
+                        <param name="beta_graz_c">100.0</param>
+                        <param name="beta_mort_a">0.8</param>
+                        <param name="beta_mort_b">0.4</param>
+                        <param name="beta_mort_c">100.0</param>
+                        <param name="par_bio_red_POC_CaCO3">0.0285</param>
+                        <param name="par_bio_red_POC_CaCO3_pP">0.7440</param>
+                        <param name="nsubtime">25</param>
+                        <param name="par_ecogem_plankton_file">3P3Z.eco</param>
+                        <param name="ctrl_continuing">.false.</param>
+                        <param name="ctrl_ncrst">.true.</param>
+                        <param name="par_rstdir_name">
+                                <sep/>
+                                scratch
+                                <sep/>
+                                uni
+                                <sep/>
+                                u234
+                                <sep/>
+                                u236002
+                                <sep/>
+                                CGENIE_REMY2
+                                <sep/>
+                                cgenie_output
+                                <sep/>
+                                XXXX
+                                <sep/>
+                                ecogem
+                        </param> 
+                </model>
+                <model name="biogem">
+                        <param name="par_misc_t_runtime">500</param>
+                        <param name="ctrl_force_windspeed">.false.</param>
+                        <param name="ctrl_force_oldformat">.false.</param>
+                        <param name="par_forcing_name">worjh2.FeMahowald2006_RpCO2_Rp13CO2_64x32</param>
+                        <param name="par_bio_prodopt">NONE</param>
+                        <param name="par_bio_tau">95.6337</param>
+                        <param name="par_bio_red_DOMfrac">0.66</param>
+                        <param name="par_bio_red_POC_CaCO3">0.0485</param>
+                        <param name="par_bio_red_POC_CaCO3_pP">0.7440</param>
+                        <param name="par_bio_remin_DOMlifetime">1.0</param>
+                        <param name="par_bio_remin_POC_frac2">0.055</param>
+                        <param name="par_bio_remin_POC_eL1">589.9451</param>
+                        <param name="par_bio_remin_POC_eL2">1000000.0</param>
+                        <param name="par_bio_remin_CaCO3_frac2">0.45</param>
+                        <param name="par_bio_remin_CaCO3_eL1">1.8905e+003</param>
+                        <param name="par_bio_remin_CaCO3_eL2">1000000.0</param>
+                        <param name="par_det_Fe_sol">0.002014275</param>
+                        <param name="par_det_Fe_sol_exp">0.500</param>
+                        <param name="ctrl_bio_red_fixedFetoC">.false.</param>
+                        <param name="par_bio_red_POFe_POC">250000.0</param>
+                        <param name="par_scav_Fe_sf_POC">0.344104</param>
+                        <param name="par_scav_Fe_sf_CaCO3">0.000</param>
+                        <param name="par_scav_Fe_sf_opal">0.000</param>
+                        <param name="par_scav_Fe_sf_det">0.000</param>
+                        <param name="par_scav_fremin">0.0</param>
+                        <param name="ctrl_bio_NO_fsedFe">.false.</param>
+                        <param name="par_K_FeL_pP">11.0</param>
+                        <param name="par_bio_FetoC_pP">-0.4225</param>
+                        <param name="par_bio_FetoC_K">103684.0</param>
+                        <param name="par_bio_FetoC_C">0.0</param>
+                        <param name="opt_geochem_Fe">hybrid</param>
+                        <param name="par_data_save_level">10</param>
+                        <param name="ctrl_audit">.false.</param>
+                        <param name="ctrl_debug_lvl0">.true.</param>
+                        <paramArray name="ocn_init">
+                                <param index="3">2.244E-03</param>
+                                <param index="4">0.4</param>
+                                <param index="8">2.159E-06</param>
+                                <param index="10">1.696E-04</param>
+                                <param index="12">2.363E-03</param>
+                                <param index="15">0.0</param>
+                                <param index="16">0.0</param>
+                                <param index="20">0.0</param>
+                                <param index="22">0.0</param>
+                                <param index="35">1.025E-02</param>
+                                <param index="38">2.916E-02</param>
+                                <param index="40">0.0</param>
+                                <param index="42">1.000E-09</param>
+                                <param index="50">5.282E-02</param>
+                                <param index="90">0.650E-09</param>
+                        </paramArray>
+                        <paramArray name="par_atm_force_scale_val">
+                                <param index="3">278.0E-06</param>
+                                <param index="4">-6.5</param>
+                        </paramArray>
+                        <param name="ctrl_continuing">.true.</param>
+                        <param name="ctrl_ncrst">.true.</param> 
+                        <param name="par_rstdir_name">
+                                <sep/>
+                                scratch
+                                <sep/>
+                                uni
+                                <sep/>
+                                u234
+                                <sep/>
+                                u236002
+                                <sep/>
+                                CGENIE_REMY2
+                                <sep/>
+                                cgenie_output
+                                <sep/>
+                                XXXX
+                                <sep/>
+                                biogem
+                        </param>
+                </model>
+                <model name="rokgem">
+                        <param name="ctrl_continuing">.true.</param>
+                        <param name="par_rstdir_name">
+                                <sep/>
+                                scratch
+                                <sep/>
+                                uni
+                                <sep/>
+                                u234
+                                <sep/>
+                                u236002
+                                <sep/>
+                                CGENIE_REMY2
+                                <sep/>
+                                cgenie_output
+                                <sep/>
+                                XXXX
+                                <sep/>
+                                rokgem
+                        </param> 
+                </model>
+	</parameters>
+</job>

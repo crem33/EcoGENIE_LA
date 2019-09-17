@@ -28,10 +28,10 @@
 #
 # ---------------------------------------------------------------------
 
-CODEDIR=~/cgenie.muffin
-OUTROOT=~/cgenie_output
-ARCHIVEDIR=~/cgenie_archive
-LOGDIR=~/cgenie_log
+CODEDIR=/scratch/local1/u246035/cGENIE/EMBM/cgenie.muffin
+OUTROOT=/scratch/local1/u246035/cGENIE/EMBM/cgenie_output
+ARCHIVEDIR=/scratch/local1/u246035/cGENIE/EMBM/cgenie_archive
+LOGDIR=/scratch/local1/u246035/cGENIE/EMBM/cgenie_log
 
 RUNTIME_ROOT=${RUNTIME_ROOT:=../../cgenie.muffin}
 RUNTIME_OUTDIR=${RUNTIME_OUTDIR:=.}

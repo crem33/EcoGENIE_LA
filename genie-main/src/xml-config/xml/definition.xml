@@ -2512,6 +2512,10 @@
 			<value datatype="boolean">.false.</value>
                         <description></description>
                     </param>
+                    <param name="lsolflx">
+                        <value datatype="boolean">.false.</value>
+                        <description></description>
+                    </param>
                 </namelist>
             </file>
         </model>

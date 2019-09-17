@@ -61,6 +61,9 @@
 
       print*,mypid,NROOT
       if (mypid == NROOT) then
+!!FL
+!!       print*,'FLINFO PLASIM PROLOG, mpstep= ',mpstep
+
          call cpu_time(tmstart)
          write(*,'(/," ****************************************************")')
          write(*,'(" * PLANET SIMULATOR ",a31," *")') trim(pumaversion)
@@ -673,7 +676,11 @@
 
       endif
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+!!FL
+!!        if(mypid==NROOT) then
+!!         print*,'FLINFO IN PLASIM MASTER, nstep=',nstep
+!!        endif
+   
 
 !        ************************************************************
 !        * calculation of non-linear quantities in grid point space *
@@ -694,7 +701,9 @@
       call gridpointd
 
       if (mypid == NROOT) then
-         if (mod(nstep,nafter) == 0 .and. noutput > 0) then
+!!FL       if (mod(nstep,nafter) == 0 .and. noutput > 0) then
+         if (mod(nstep+1-(n_days_per_year*24*60/mpstep),nafter) == 0   &
+     &       .and. noutput > 0) then
             call outsp
          endif
          if (mod(nstep,ndiag) == 0) then
@@ -840,6 +849,11 @@
         annsat=0.0
  919  format(1p10e11.3)
       endif
+!!FL
+!!        if(mypid==NROOT) then
+!!         print*,'FLINFO OUT PLASIM MASTER'
+!!        endif
+
 
       return
       end subroutine master
@@ -918,6 +932,8 @@
       subroutine epilog
       use pumamod
       implicit none
+!!FL
+!!      print*,'FLINFO IN EPILOG, nstep=',nstep
 
       close(unit=9191)
 
@@ -937,7 +953,7 @@
 !
 !     close output file
 !
-      if (mypid == NROOT) close(40)
+      if (mypid == NROOT) close(104)
 
 !
 !     close efficiency diagnostic file

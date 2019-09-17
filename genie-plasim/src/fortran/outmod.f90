@@ -135,13 +135,13 @@
       itru = NTRU
       ilat = NLAT
       ilev = NLEV
-      open  (40,file=trim(outdir_name)//'/puma_output',form='unformatted')
-      write (40) ypuma
-      write (40) itru
-      write (40) ilat
-      write (40) ilev
+      open  (104,file=trim(outdir_name)//'/puma_output',form='unformatted')
+      write (104) ypuma
+      write (104) itru
+      write (104) ilat
+      write (104) ilev
       zsigmah(:)=sigmah(:)
-      write (40) zsigmah
+      write (104) zsigmah
 
       return
       end
@@ -250,20 +250,20 @@
 !     * orograpy *
 !     ************
 
-      call writesp(40,so,129,0,CV*CV,0.)
+      call writesp(104,so,129,0,CV*CV,0.)
 
 !     ************
 !     * pressure *
 !     ************
 
-      call writesp(40,sp,152,0,1.0,log(psurf))
+      call writesp(104,sp,152,0,1.0,log(psurf))
 
 !     ***************
 !     * temperature *
 !     ***************
 
       do jlev = 1 , NLEV
-         call writesp(40,st(1,jlev),130,jlev,ct,t0(jlev) * ct)
+         call writesp(104,st(1,jlev),130,jlev,ct,t0(jlev) * ct)
       enddo
 
 !     *********************
@@ -272,7 +272,7 @@
 
       if (nqspec == 1) then
          do jlev = 1 , NLEV
-            call writesp(40,sqout(1,jlev),133,jlev,1.0,0.0)
+            call writesp(104,sqout(1,jlev),133,jlev,1.0,0.0)
          enddo
       endif
 
@@ -281,7 +281,7 @@
 !     **************
 
       do jlev = 1 , NLEV
-         call writesp(40,sd(1,jlev),155,jlev,ww,0.0)
+         call writesp(104,sd(1,jlev),155,jlev,ww,0.0)
       enddo
 
 !     *************
@@ -291,7 +291,7 @@
       do jlev = 1 , NLEV
          zsave = sz(3,jlev)
          sz(3,jlev) = sz(3,jlev) - plavor
-         call writesp(40,sz(1,jlev),138,jlev,ww,0.0)
+         call writesp(104,sz(1,jlev),138,jlev,ww,0.0)
          sz(3,jlev) = zsave
       enddo
 
@@ -437,6 +437,8 @@
 !PBH create netcdf file with date stamp
       istep=nstep
       call ntomin(istep,nmin,nhour,nday,nmonth,nyear)
+!FL
+!!      goto 1111   
       write(netcdf_filename,10000) nyear,nmonth,nday
 10000 format('/',i4.4,'-',i2.2,'-',i2.2,'_plasim.nc')
       ierr=nf_create(trim(outdir_name)//trim(netcdf_filename),nf_clobber,fileid)
@@ -860,6 +862,8 @@
 
 !PBH  close netcdf
       ierr=nf_close(fileid)
+!!FL
+ 1111 continue
 
 !     *********************
 !     * specific humidity *
@@ -867,7 +871,7 @@
 
       if (nqspec == 0) then ! Semi Langrangian advection active
          do jlev = 1 , NLEV
-            call writegp(40,dq(1,jlev),133,jlev)
+            call writegp(104,dq(1,jlev),133,jlev)
          enddo
       endif
 
@@ -875,276 +879,276 @@
 !     * mixed-layer depth (from ocean) *
 !     **********************************
 
-      call writegp(40,dmld,110,0)
+      call writegp(104,dmld,110,0)
 
 !     ***********************
 !     * surface temperature *
 !     ***********************
 
-      call writegp(40,dt(1,NLEP),139,0)
+      call writegp(104,dt(1,NLEP),139,0)
 
 !     ****************
 !     * soil wetness *
 !     ****************
 
-      call writegp(40,dwatc,140,0)
+      call writegp(104,dwatc,140,0)
 
 !     **************
 !     * snow depth *
 !     **************
 
-      call writegp(40,dsnow,141,0)
+      call writegp(104,dsnow,141,0)
 
 !     **********************
 !     * large scale precip *
 !     **********************
 
       aprl(:)=aprl(:)/real(naccuout)
-      call writegp(40,aprl,142,0)
+      call writegp(104,aprl,142,0)
 
 !     *********************
 !     * convective precip *
 !     *********************
 
       aprc(:)=aprc(:)/real(naccuout)
-      call writegp(40,aprc,143,0)
+      call writegp(104,aprc,143,0)
 
 !     *************
 !     * snow fall *
 !     *************
 
       aprs(:)=aprs(:)/real(naccuout)
-      call writegp(40,aprs,144,0)
+      call writegp(104,aprs,144,0)
 
 !     **********************
 !     * sensible heat flux *
 !     **********************
 
       ashfl(:)=ashfl(:)/real(naccuout)
-      call writegp(40,ashfl,146,0)
+      call writegp(104,ashfl,146,0)
 
 !     ********************
 !     * latent heat flux *
 !     ********************
 
       alhfl(:)=alhfl(:)/real(naccuout)
-      call writegp(40,alhfl,147,0)
+      call writegp(104,alhfl,147,0)
 
 !     ************************
 !     * liquid water content *
 !     ************************
 
       do jlev = 1 , NLEV
-         call writegp(40,dql(:,jlev),161,jlev)
+         call writegp(104,dql(:,jlev),161,jlev)
       enddo
 
 !     *************
 !     * u-star**3 *
 !     *************
 
-      call writegp(40,dust3,159,0)
+      call writegp(104,dust3,159,0)
 
 !     **********
 !     * runoff *
 !     **********
 
       aroff(:)=aroff(:)/real(naccuout)
-      call writegp(40,aroff,160,0)
+      call writegp(104,aroff,160,0)
 
 !     ***************
 !     * cloud cover *
 !     ***************
 
       do jlev = 1 , NLEV
-        call writegp(40,dcc(1,jlev),162,jlev)
+        call writegp(104,dcc(1,jlev),162,jlev)
       enddo
       acc(:)=acc(:)/real(naccuout)
-      call writegp(40,acc,164,0)
+      call writegp(104,acc,164,0)
 
 !     ***************************
 !     * surface air temperature *
 !     ***************************
 
       atsa(:)=atsa(:)/real(naccuout)
-      call writegp(40,atsa,167,0)
+      call writegp(104,atsa,167,0)
 
 !     ******************************
 !     * surface temperature (accu) *
 !     ******************************
 
       ats0(:)=ats0(:)/real(naccuout)
-      call writegp(40,ats0,169,0)
+      call writegp(104,ats0,169,0)
 
 !     *************************
 !     * deep soil temperature *
 !     *************************
 
-      call writegp(40,dtd5,170,0)
+      call writegp(104,dtd5,170,0)
 
 !     *****************
 !     * land sea mask *
 !     *****************
 
-      call writegp(40,dls,172,0)
+      call writegp(104,dls,172,0)
 
 !     *********************
 !     * surface roughness *
 !     *********************
 
-      call writegp(40,dz0,173,0)
+      call writegp(104,dz0,173,0)
 
 !     **********
 !     * albedo *
 !     **********
 
-      call writegp(40,dalb,175,0)
+      call writegp(104,dalb,175,0)
 
 !     ***************************
 !     * surface solar radiation *
 !     ***************************
 
       assol(:)=assol(:)/real(naccuout)
-      call writegp(40,assol,176,0)
+      call writegp(104,assol,176,0)
 
 !     *****************************
 !     * surface thermal radiation *
 !     *****************************
 
       asthr(:)=asthr(:)/real(naccuout)
-      call writegp(40,asthr,177,0)
+      call writegp(104,asthr,177,0)
 
 !     ***********************
 !     * top solar radiation *
 !     ***********************
 
       atsol(:)=atsol(:)/real(naccuout)
-      call writegp(40,atsol,178,0)
+      call writegp(104,atsol,178,0)
 
 !     *************************
 !     * top thermal radiation *
 !     *************************
 
       atthr(:)=atthr(:)/real(naccuout)
-      call writegp(40,atthr,179,0)
+      call writegp(104,atthr,179,0)
 
 !     ************
 !     * u-stress *
 !     ************
 
       ataux(:)=ataux(:)/real(naccuout)
-      call writegp(40,ataux,180,0)
+      call writegp(104,ataux,180,0)
 
 !     *************
 !     * v- stress *
 !     *************
 
       atauy(:)=atauy(:)/real(naccuout)
-      call writegp(40,atauy,181,0)
+      call writegp(104,atauy,181,0)
 
 !     ***************
 !     * evaporation *
 !     ***************
 
       aevap(:)=aevap(:)/real(naccuout)
-      call writegp(40,aevap,182,0)
+      call writegp(104,aevap,182,0)
 
 !     *********************
 !     * soil temperature *
 !     *********************
 
-      call writegp(40,dtsoil,183,0)
+      call writegp(104,dtsoil,183,0)
 
 !     ********************
 !     * vegetation cover *
 !     ********************
 
-      call writegp(40,dveg,199,0)
+      call writegp(104,dveg,199,0)
 
 !     *******************
 !     * leaf area index *
 !     *******************
 
-      call writegp(40,dlai,200,0)
+      call writegp(104,dlai,200,0)
 
 !     ********************
 !     * top solar upward *
 !     ********************
 
       atsolu(:)=atsolu(:)/real(naccuout)
-      call writegp(40,atsolu,203,0)
+      call writegp(104,atsolu,203,0)
 
 !     ************************
 !     * surface solar upward *
 !     ************************
 
       assolu(:)=assolu(:)/real(naccuout)
-      call writegp(40,assolu,204,0)
+      call writegp(104,assolu,204,0)
 
 !     **************************
 !     * surface thermal upward *
 !     **************************
 
       asthru(:)=asthru(:)/real(naccuout)
-      call writegp(40,asthru,205,0)
+      call writegp(104,asthru,205,0)
 
 !     *******************************
 !     * soil temperatures level 2-4 *
 !     *******************************
 
-      call writegp(40,dtd2,207,0)
-      call writegp(40,dtd3,208,0)
-      call writegp(40,dtd4,209,0)
+      call writegp(104,dtd2,207,0)
+      call writegp(104,dtd3,208,0)
+      call writegp(104,dtd4,209,0)
 
 !     *****************
 !     * sea ice cover *
 !     *****************
 
-      call writegp(40,dicec,210,0)
+      call writegp(104,dicec,210,0)
 
 !     *********************
 !     * sea ice thickness *
 !     *********************
 
-      call writegp(40,diced,211,0)
+      call writegp(104,diced,211,0)
 
 !     ****************
 !     * forest cover *
 !     ****************
 
-      call writegp(40,dforest,212,0)
+      call writegp(104,dforest,212,0)
 
 !     *************
 !     * snow melt *
 !     *************
 
       asmelt(:)=asmelt(:)/real(naccuout)
-      call writegp(40,asmelt,218,0)
+      call writegp(104,asmelt,218,0)
 
 !     *********************
 !     * snow depth change *
 !     *********************
 
       asndch(:)=asndch(:)/real(naccuout)
-      call writegp(40,asndch,221,0)
+      call writegp(104,asndch,221,0)
 
 !     ******************
 !     * field capacity *
 !     ******************
 
-      call writegp(40,dwmax,229,0)
+      call writegp(104,dwmax,229,0)
 
 !     *****************************************
 !     * vertical integrated specific humidity *
 !     *****************************************
 
       aqvi(:)=aqvi(:)/real(naccuout)
-      call writegp(40,aqvi,230,0)
+      call writegp(104,aqvi,230,0)
 
 !     ****************
 !     * glacier mask *
 !     ****************
 
-      call writegp(40,dglac,232,0)
+      call writegp(104,dglac,232,0)
 
 !     *********************
 !     ***   S I M B A   ***
@@ -1155,68 +1159,68 @@
 !     ****************************
 
       agpp(:)=agpp(:)/real(naccuout)
-      call writegp(40,agpp,300,0)
+      call writegp(104,agpp,300,0)
 
 !     **************************
 !     * net primary production *
 !     **************************
 
       anpp(:)=anpp(:)/real(naccuout)
-      call writegp(40,anpp,301,0)
+      call writegp(104,anpp,301,0)
 
 !     *********************
 !     * light limited GPP *
 !     *********************
 
       agppl(:)=agppl(:)/real(naccuout)
-      call writegp(40,agppl,302,0)
+      call writegp(104,agppl,302,0)
 
 !     *********************
 !     * water limited GPP *
 !     *********************
 
       agppw(:)=agppw(:)/real(naccuout)
-      call writegp(40,agppw,303,0)
+      call writegp(104,agppw,303,0)
 
 !     *********************
 !     * vegetation carbon *
 !     *********************
 
-      call writegp(40,dcveg,304,0)
+      call writegp(104,dcveg,304,0)
 
 !     ***************
 !     * soil carbon *
 !     ***************
 
-      call writegp(40,dcsoil,305,0)
+      call writegp(104,dcsoil,305,0)
 
 !     ************************
 !     * no growth allocation *
 !     ************************
 
       anogrow(:)=anogrow(:)/real(naccuout)
-      call writegp(40,anogrow,306,0)
+      call writegp(104,anogrow,306,0)
 
 !     *****************************
 !     * heterotrophic respiration *
 !     *****************************
 
       aresh(:)=aresh(:)/real(naccuout)
-      call writegp(40,aresh,307,0)
+      call writegp(104,aresh,307,0)
 
 !     *********************
 !     * litter production *
 !     *********************
 
       alitter(:)=alitter(:)/real(naccuout)
-      call writegp(40,alitter,308,0)
+      call writegp(104,alitter,308,0)
 
 !     **************
 !     * water loss *
 !     **************
 
       awloss(:)=awloss(:)/real(naccuout)
-      call writegp(40,awloss,309,0)
+      call writegp(104,awloss,309,0)
 !
       return
       end
@@ -1237,7 +1241,7 @@
       if(ndiagsp2d > 0 .and. mypid == NROOT) then
        do jdiag=1,ndiagsp2d
         jcode=50+jdiag
-        call writesp(40,dsp2d(1,jdiag),jcode,0,1.,0.0)
+        call writesp(104,dsp2d(1,jdiag),jcode,0,1.,0.0)
        enddo
       end if
 
@@ -1249,7 +1253,7 @@
        do jdiag=1,ndiagsp3d
         jcode=60+jdiag
         do jlev=1,NLEV
-         call writesp(40,dsp3d(1,jlev,jdiag),jcode,jlev,1.,0.0)
+         call writesp(104,dsp3d(1,jlev,jdiag),jcode,jlev,1.,0.0)
         enddo
        enddo
       end if
@@ -1261,7 +1265,7 @@
       if(ndiaggp2d > 0) then
        do jdiag=1,ndiaggp2d
         jcode=jdiag
-        call writegp(40,dgp2d(1,jdiag),jcode,0)
+        call writegp(104,dgp2d(1,jdiag),jcode,0)
        enddo
       end if
 
@@ -1273,7 +1277,7 @@
        do jdiag=1,ndiaggp3d
         jcode=20+jdiag
         do jlev=1,NLEV
-         call writegp(40,dgp3d(1,jlev,jdiag),jcode,jlev)
+         call writegp(104,dgp3d(1,jlev,jdiag),jcode,jlev)
         enddo
        enddo
       end if
@@ -1283,13 +1287,13 @@
 !     ************************************************
 
       if(ndiagcf > 0) then
-       call writegp(40,dclforc(1,1),101,0)
-       call writegp(40,dclforc(1,2),102,0)
-       call writegp(40,dclforc(1,3),103,0)
-       call writegp(40,dclforc(1,4),104,0)
-       call writegp(40,dclforc(1,5),105,0)
-       call writegp(40,dclforc(1,6),106,0)
-       call writegp(40,dclforc(1,7),107,0)
+       call writegp(104,dclforc(1,1),101,0)
+       call writegp(104,dclforc(1,2),102,0)
+       call writegp(104,dclforc(1,3),103,0)
+       call writegp(104,dclforc(1,4),104,0)
+       call writegp(104,dclforc(1,5),105,0)
+       call writegp(104,dclforc(1,6),106,0)
+       call writegp(104,dclforc(1,7),107,0)
       end if
 
 !     **************************************
@@ -1299,7 +1303,7 @@
       if(nentropy > 0) then
        do jdiag=1,33
         jcode=319+jdiag
-        call writegp(40,dentropy(1,jdiag),jcode,0)
+        call writegp(104,dentropy(1,jdiag),jcode,0)
        enddo
       end if
 
@@ -1310,7 +1314,7 @@
       if(nenergy > 0) then
        do jdiag=1,28
         jcode=359+jdiag
-        call writegp(40,denergy(1,jdiag),jcode,0)
+        call writegp(104,denergy(1,jdiag),jcode,0)
        enddo
       end if
 !

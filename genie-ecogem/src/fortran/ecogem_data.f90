@@ -155,6 +155,9 @@ CONTAINS
        print*,'--- DATA SAVING: MISC ------------------------------'
        print*,'Restart in netCDF format?                           : ',ctrl_ncrst
        print*,'netCDF restart file name                            : ',trim(par_ncrst_name)
+! RA (11/02/2019)
+!       print*,'Number of timesteps in sub-inteval saving           : ',par_data_save_slice_n
+! RA (11/02/2019)
     end if ! end ctrl_debug_eco_init
 66  format(a56,l2)
 67  format(a56,i2)

@@ -226,6 +226,8 @@ c     namelist for reading initialisation data
       NAMELIST /ini_gold_nml/ctrl_diagend,ctrl_diagmld
       NAMELIST /ini_gold_nml/saln0
       NAMELIST /ini_gold_nml/rst_reset_T
+c FL (07/08/18)
+      NAMELIST /ini_gold_nml/lsolflx
 
 c ------------------------------------------------------------ c
 c INITIALIZE VARIABLES
@@ -233,7 +235,8 @@ c ------------------------------------------------------------ c
       j_hosing(1) = 0
       j_hosing(2) = 0
 c ------------------------------------------------------------ c
-
+c FL (07/08/18) turn on (.TRUE.) or off (.FALSE.) the phytoplankton light absorption
+      lsolflx = .TRUE.  
 c ======================================================================
 c Setting up GOLDSTEIN
 c ======================================================================
