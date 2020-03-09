@@ -1,4 +1,4 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Mon Sep 16 15:59:48 2019
+        !COMPILER-GENERATED INTERFACE MODULE: Fri Mar  6 15:35:33 2020
         ! This source file is for reference only and may not completely
         ! represent the generated interface used by the compiler.
         MODULE INITIALISE_BIOGEM__genmod
@@ -28,14 +28,14 @@
               INTEGER(KIND=4), INTENT(IN) :: DUM_IAF(36)
               INTEGER(KIND=4), INTENT(IN) :: DUM_JSF
               INTEGER(KIND=4), INTENT(IN) :: DUM_K1(36,36)
-              REAL(KIND=8), INTENT(IN) :: DUM_DZ(16)
-              REAL(KIND=8), INTENT(IN) :: DUM_DZA(16)
+              REAL(KIND=8), INTENT(IN) :: DUM_DZ(32)
+              REAL(KIND=8), INTENT(IN) :: DUM_DZA(32)
               REAL(KIND=8), INTENT(IN) :: DUM_C(0:36)
               REAL(KIND=8), INTENT(IN) :: DUM_CV(0:36)
               REAL(KIND=8), INTENT(IN) :: DUM_S(0:36)
               REAL(KIND=8), INTENT(IN) :: DUM_SV(0:36)
-              REAL(KIND=8), INTENT(INOUT) :: DUM_TS(14,36,36,16)
-              REAL(KIND=8), INTENT(INOUT) :: DUM_TS1(14,36,36,16)
+              REAL(KIND=8), INTENT(INOUT) :: DUM_TS(14,36,36,32)
+              REAL(KIND=8), INTENT(INOUT) :: DUM_TS1(14,36,36,32)
               REAL(KIND=8), INTENT(INOUT) :: DUM_SFCATM1(19,36,36)
               REAL(KIND=8), INTENT(INOUT) :: DUM_SFXATM1(19,36,36)
               REAL(KIND=8), INTENT(INOUT) :: DUM_SFCOCN1(101,36,36)

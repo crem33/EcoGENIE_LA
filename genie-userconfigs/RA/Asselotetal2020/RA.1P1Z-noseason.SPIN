@@ -8,7 +8,6 @@ ea_36=y
 ea_dosc=.false.
 go_dosc=.false.
 gs_dosc=.false.
-#
 # --- BIOLOGICAL NEW PRODUCTION -------------------------------------
 #
 # biological scheme ID string
@@ -102,7 +101,7 @@ eg_ns          =   2
 
 eg_respir_a    = 0
 
-eg_beta_mort_a =  2.10 # Maximum fraction to DOM as ESD --> zero     # Default value 0.8
+eg_beta_mort_a =   0.8 # Maximum fraction to DOM as ESD --> zero     # Default value 0.8
 eg_beta_mort_b =   0.4 # Minimum fraction to DOM as ESD --> infinity 
 eg_beta_mort_c = 100.0 # Size at 50:50 partition (default = 100 µm^3)
 eg_beta_graz_a =   0.8 # Maximum fraction to DOM as ESD --> zero
@@ -113,7 +112,7 @@ eg_par_bio_red_POC_CaCO3     = 0.0285 # underlying export CaCO3 as a proportion 
 eg_par_bio_red_POC_CaCO3_pP  = 0.7440 # exponent for modifier of CaCO3:POC export ratio
 
 eg_nsubtime                 =25
-eg_n_keco                   =1
+eg_n_keco                   =6
 eg_k_chl                    =0
 
 # disable ECOGEM restarts (as not currently coded up / used)
@@ -140,6 +139,10 @@ bg_par_forcing_name="worjh2.FeMahowald2006"
 go_imld = 1
 # Enable light to penetrate into deeper layers of the ocean (.TRUE.) or not (.FALSE.)    (RA 28/02/2019)
 go_lsolflx = .TRUE.
+#save the GOLDTEIN outputs every 100 years
+go_6=9600
+#save the EMBM oututpus every 100 years
+ea_6=9600
 #
 # --- END -----------------------------------------------------------
 #

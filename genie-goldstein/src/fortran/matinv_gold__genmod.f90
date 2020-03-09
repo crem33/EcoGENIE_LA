@@ -1,4 +1,4 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Mon Sep 16 15:58:26 2019
+        !COMPILER-GENERATED INTERFACE MODULE: Fri Mar  6 15:34:18 2020
         ! This source file is for reference only and may not completely
         ! represent the generated interface used by the compiler.
         MODULE MATINV_GOLD__genmod

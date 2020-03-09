@@ -313,7 +313,7 @@ c                 of them (need f90 compilation for this)
       if (dosc) then
 c average the last nyear steps in every ianav steps (if ianav>nyear)
       itv = mod(istep+(nyear*ndta)-1,(ianav*ndta))
-c      if(itv.lt.(nyear*ndta))then
+c       if(itv.lt.(nyear*ndta))then
       if(itv.lt.(nyear*ndta) .and. (mod(istep,ndta).lt.1))then
          ext=conv_embm(mod(iav,10))
          if(istep.ge.(nyear*ndta).and.itv.eq.(nyear*ndta)-1)then
@@ -321,18 +321,23 @@ c      if(itv.lt.(nyear*ndta))then
          else
             iout = 0
          endif
-         if (debug_loop) call diagosc_embm(istep, iout, ext, fx0flux, fwflux,
-     :     wateratm)
+cRA -> I remove the if (debug_loop) and remove ":" in front of the call diagnosc for the embm outputs
+c         if (debug_loop) 
+c     :     call diagosc_embm(istep, iout, ext, fx0flux, fwflux, wateratm)
+           call diagosc_embm(istep, iout, ext, fx0flux, fwflux, wateratm)
 c         endif
       endif
       endif
 
 c AY (22/03/04) : netCDF writing code (from Paul and Dan)
       if(mod(istep,(iwstp*ndta)).eq.0) then
-         if (debug_loop) print*,'Writing EMBM netCDF file at time',istep
+cRA remove the if(debug_loop) to obtain the EMBM outputs
+c         if (debug_loop) print*,'Writing EMBM netCDF file at time',istep
 c
 c        do netCDF stuff ...
          call ini_netcdf_embm(istep,1)
+         print*,"made it"
+         stop
 c
 c AY (12/07/05) : removed surplus input arguments to subroutine
 c AP (03/08/06) : provide a dummy field for qdry
@@ -345,7 +350,8 @@ c also use dummy field for qdry for rq_pa
      :        maxi, maxj, 1)
 c
          call end_netcdf_embm(1)
-         if (debug_loop) print*
+cRA remove the if(debug_loop) to obtain the EMBM outputs
+c         if (debug_loop) print*
       endif
 
 c Output arguments

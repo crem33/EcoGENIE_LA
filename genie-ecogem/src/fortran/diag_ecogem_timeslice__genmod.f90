@@ -1,4 +1,4 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Tue Sep 17 10:35:01 2019
+        !COMPILER-GENERATED INTERFACE MODULE: Fri Mar  6 15:36:13 2020
         ! This source file is for reference only and may not completely
         ! represent the generated interface used by the compiler.
         MODULE DIAG_ECOGEM_TIMESLICE__genmod
@@ -17,9 +17,9 @@
               LOGICAL(KIND=4), INTENT(IN) :: DUM_ENDSLICE
               REAL(KIND=8), INTENT(IN) :: DUM_EGBG_FXSW(36,36)
               REAL(KIND=8), INTENT(IN) :: DUM_MLD(36,36)
-              REAL(KIND=8), INTENT(IN) :: DUM_EGBG_SFCOCN(101,36,36,16)
-              REAL(KIND=8), INTENT(OUT) :: DUM_EGBG_SFCPART(87,36,36,16)
-              REAL(KIND=8), INTENT(OUT) :: DUM_EGBG_SFCDISS(101,36,36,16&
+              REAL(KIND=8), INTENT(IN) :: DUM_EGBG_SFCOCN(101,36,36,32)
+              REAL(KIND=8), INTENT(OUT) :: DUM_EGBG_SFCPART(87,36,36,32)
+              REAL(KIND=8), INTENT(OUT) :: DUM_EGBG_SFCDISS(101,36,36,32&
      &)
             END SUBROUTINE DIAG_ECOGEM_TIMESLICE
           END INTERFACE 

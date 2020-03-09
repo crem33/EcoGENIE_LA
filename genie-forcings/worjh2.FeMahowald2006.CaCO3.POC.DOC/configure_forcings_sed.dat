@@ -4,8 +4,8 @@
 
 -START-OF-DATA-
  22  t  F  -1  01  01  '[detrital (refractory) material (wt%)]'
- 03  t  F  -1  01  01  '[particulate organic carbon (POC) (wt%)]' 
- 04  t  F  -1  01  01  '[particulate organic carbon 13C (POC_13C) (o/oo)]'
+ 03  t  F  -1  01  01  '[particulate organic carbon (POC) (mol/yr)]'
+ 14  t  F  -1  01  01  '[calcium carbonate (CaCO3) (mol/yr)]' 
 -END-OF-DATA-
 
   /\ /\ /\ /\  /\  /\

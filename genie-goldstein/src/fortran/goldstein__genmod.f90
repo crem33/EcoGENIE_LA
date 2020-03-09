@@ -1,4 +1,4 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Mon Sep 16 15:58:20 2019
+        !COMPILER-GENERATED INTERFACE MODULE: Fri Mar  6 15:34:13 2020
         ! This source file is for reference only and may not completely
         ! represent the generated interface used by the compiler.
         MODULE GOLDSTEIN__genmod
@@ -43,17 +43,17 @@
               REAL(KIND=8) :: TEST_ENERGY_OCEAN
               REAL(KIND=8) :: TEST_WATER_OCEAN
               INTEGER(KIND=4) :: KOVERALL
-              REAL(KIND=8) :: GO_TS(1:14,1:36,1:36,1:16)
-              REAL(KIND=8) :: GO_TS1(1:14,1:36,1:36,1:16)
+              REAL(KIND=8) :: GO_TS(1:14,1:36,1:36,1:32)
+              REAL(KIND=8) :: GO_TS1(1:14,1:36,1:36,1:32)
               REAL(KIND=8) :: GO_COST(1:36,1:36)
-              REAL(KIND=8) :: GO_U(1:3,1:36,1:36,1:16)
+              REAL(KIND=8) :: GO_U(1:3,1:36,1:36,1:32)
               REAL(KIND=8) :: GO_TAU(1:2,1:36,1:36)
               REAL(KIND=8) :: GO_PSI(0:36,0:36)
               REAL(KIND=8) :: GO_MLDTA(1:36,1:36)
-              REAL(KIND=8) :: GO_RHO(1:36,1:36,1:16)
-              REAL(KIND=8) :: GO_DIFFV(1:36,1:36,1:16)
-              REAL(KIND=8) :: GO_DZRHO(1:36,1:36,1:16)
-              REAL(KIND=8) :: ECO_SWR_OCN(36,36,16)
+              REAL(KIND=8) :: GO_RHO(1:36,1:36,1:32)
+              REAL(KIND=8) :: GO_DIFFV(1:36,1:36,1:32)
+              REAL(KIND=8) :: GO_DZRHO(1:36,1:36,1:32)
+              REAL(KIND=8) :: ECO_SWR_OCN(36,36,32)
             END SUBROUTINE GOLDSTEIN
           END INTERFACE 
         END MODULE GOLDSTEIN__genmod

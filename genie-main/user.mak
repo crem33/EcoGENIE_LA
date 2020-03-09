@@ -23,8 +23,8 @@
 # ====================================================================
 
 ## === Compre the values below to those in user.sh ===
-GENIE_ROOT        = /scratch/local1/u246035/cGENIE/EMBM/cgenie.muffin
-OUT_DIR           = /scratch/local1/u246035/cGENIE/EMBM/cgenie_output
+GENIE_ROOT        = /scratch/local1/cGENIE/EMBM/cgenie.muffin
+OUT_DIR           = /scratch/local1/cGENIE/EMBM/cgenie_output
 RUNTIME_ROOT      = ../../cgenie.muffin
 
 # === Fortran compiler (ifc/ifort/f90/pgf90) ===
@@ -75,7 +75,7 @@ MODEXT=mod
 
 ### DEFAULT ###
 #NETCDF_DIR=/usr/local
-NETCDF_DIR=/scratch/local1/u246035/cGENIE/netcdf
+NETCDF_DIR=/scratch/local1/cGENIE/netcdf
 ### eevee ###
 #NETCDF_DIR=/share/apps/netcdf-c-4.4.1.1-fortran-4.4.4
 ### iwan ###

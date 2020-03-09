@@ -9,12 +9,12 @@ else
 endif
 LOCINCPATH = $(MOD_INC_FLAG)$(CMNSG) $(MOD_INC_FLAG)$(MAIN_DIR)
 LIBNAME = libecogem
-INCLUDE_FILES = 
+INCLUDE_FILES =
 OTHER_FILES=../../../genie-main/makefile.arc Makefile
 
 OBJECTS = ecogem_lib.$(OBJ_EXT) \
 	  ecogem_box.$(OBJ_EXT) ecogem_data.$(OBJ_EXT) ecogem_data_netCDF.$(OBJ_EXT) initialise_ecogem.$(OBJ_EXT) \
-	  ecogem.$(OBJ_EXT) end_ecogem.$(OBJ_EXT)
+	  ecogem.$(OBJ_EXT) end_ecogem.$(OBJ_EXT) 
 
 all: $(OBJECTS) $(OTHER_FILES) $(INCLUDE_FILES)
 

@@ -1,4 +1,4 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Mon Sep 16 16:00:18 2019
+        !COMPILER-GENERATED INTERFACE MODULE: Fri Mar  6 15:35:59 2020
         ! This source file is for reference only and may not completely
         ! represent the generated interface used by the compiler.
         MODULE SEDGEM_DSEDAGE__genmod

@@ -1,6 +1,6 @@
 /fake/inputdata
 /fake/outputdata
-100 100  1  100          npstp iwstp itstp ianav
+100 100  1  100          npstp iwstp itstp ianav  %100 100  1  100
 n                        new/continuing
 100   5                  timesteps per year and A/O dt ratio
 5.0e6   1e6  1.0 0.1     atm. diff. amp. for T and q and dist'n width, slope

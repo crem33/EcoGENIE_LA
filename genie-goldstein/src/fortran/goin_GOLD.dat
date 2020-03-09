@@ -1,6 +1,6 @@
 /fake/inputdata
 /fake/outputdata
-100 100  1  100          npstp iwstp itstp ianav
+100 100  1  9600         npstp iwstp itstp ianav  %100 100  1  100
 n                        new/continuing
 100                      timesteps per year
 20 20 0.90 2.00          temp0 temp1 rel scl_tau

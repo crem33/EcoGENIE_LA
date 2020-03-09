@@ -109,7 +109,7 @@ eg_par_bio_red_POC_CaCO3     = 0.0285 # underlying export CaCO3 as a proportion 
 eg_par_bio_red_POC_CaCO3_pP  = 0.7440 # exponent for modifier of CaCO3:POC export ratio
 
 eg_nsubtime                 =25
-eg_n_keco                   =1
+eg_n_keco                   =6
 
 # disable ECOGEM restarts (as not currently coded up / used)
 eg_ctrl_ncrst               =.false.

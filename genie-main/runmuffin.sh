@@ -12,14 +12,14 @@ echo ""
 # CHANGE THIS FOR INSTALLATIONS OTHER THAN IN $HOME
 # SET THE SAME AS IN user.mak AND user.sh
 # set home directory
-HOMEDIR=/scratch/local1/u246035/cGENIE/EMBM
+HOMEDIR=/scratch/local1/cGENIE/EMBM
 #####################################################################
 # set output directory
 OUTPUTDIR=$HOMEDIR/cgenie_output
 # ensure rocks can find xsltproc
 export PATH=$PATH:/opt/rocks/bin:/usr/bin
 export PATH=$PATH:/share/apps/bin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/share/apps/lib
+export LD_LIBRARY_PATH=/scratch/local1/cGENIE/netcdf/lib          #$LD_LIBRARY_PATH:/share/apps/lib
 # also ifort ...
 export PATH=/state/partition1/apps/intel/bin:$PATH
 # ensure stack size is adequate
@@ -184,7 +184,7 @@ elif [ $LONS -eq 12 ] && [ $LEVS -eq 8 ]; then
     let dbiostp=2
 elif [ $LONS -eq 36 ] && [ $LEVS -eq 32 ]; then
     let N_TIMESTEPS=96
-    let dbiostp=1
+    let dbiostp=2   #1
 else
     let N_TIMESTEPS=96
     let dbiostp=1
@@ -375,3 +375,4 @@ cd $BINARYPATH
 echo ">> All done - now go and play outside"
 echo ""
 #
+

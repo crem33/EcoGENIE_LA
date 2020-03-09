@@ -510,7 +510,11 @@ c initialize
 
 c set up grid
 c For variable (exponential) dz use ez0 > 0, else use ez0 < 0
-      ez0 = 0.1
+c for a 40m deep 1st layer with 32 layers in the ocean
+c      ez0 = 0.1     
+c RA(15/11/2019) for a 29.38m deep 1st layer
+c      ez0 = 0.005699226
+      ez0 = 0.064
       z1 = ez0*((1.0 + 1/ez0)**(1.0/kmax) - 1.0)
       if (debug_init) print*,'z1',z1
       tv4 = ez0*((z1/ez0+1)**0.5-1)

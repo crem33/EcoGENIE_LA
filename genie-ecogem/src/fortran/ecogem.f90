@@ -18,6 +18,9 @@ subroutine ecogem(          &
   USE ecogem_lib
   use ecogem_data_netCDF
   USE ecogem_box
+!RA add the biogem subroutine to prescribe POC flux
+!  use biogem_box
+
 
   IMPLICIT NONE
   ! ------------------------------------------------------------ !
@@ -469,6 +472,9 @@ subroutine ecogem(          &
                     ratioGraz(io,2) = dorgmatdt(io,2)/orgbGraz(io,2)
                     !end/start
                  enddo
+!RA 
+!                 call sub_update_force_flux_sed()
+
                  ! no organic matter production in fundamental niche experiment
                  if (fundamental) dorgmatdt(:,:) = 0.0
                  
@@ -856,6 +862,7 @@ SUBROUTINE ecogem_save_rst(dum_genie_clock)
      ! >>> WRITE STATEMENTS (FOR BINARY DUM) ... <<<<<<<<<<<<< !
      close(unit=out)
   end IF
+
   ! ---------------------------------------------------------- !
   ! END
   ! ---------------------------------------------------------- !

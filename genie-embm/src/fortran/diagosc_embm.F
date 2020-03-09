@@ -186,26 +186,27 @@ c AP (03/08/06) : Call external error function
       do j=1,jmax
          lat(j)=180.0*asin(s(j))/pi
       enddo
-      err3 = err_embm(tqavg(1,1:imax,1:jmax), 1, imax, jmax, indir_name,
-     $     lenin, tdatafile, lentdata, tdata_scaling, tdata_offset,
-     $     tqinterp, tdata_varname, tdata_missing, lon, lat)
-      if (qdata_rhum) then
-         err4 = err_embm(
-c     qdryavg(1:imax,1:jmax),
-     &        rq_pa_avg, 2, imax, jmax, indir_name,
-     $        lenin, qdatafile, lenqdata, qdata_scaling, qdata_offset,
-     $        tqinterp, qdata_varname, qdata_missing, lon, lat)
-      else
-         err4 = err_embm(
-c     qdryavg(1:imax,1:jmax),
-     &        q_pa_avg, 2, imax, jmax, indir_name,
-     $        lenin, qdatafile, lenqdata, qdata_scaling, qdata_offset,
-     $        tqinterp, qdata_varname, qdata_missing, lon, lat)
-      endif
-      print*,'err_embm annual average composite = ',
-     &                          sqrt( ((err3**2*imax*jmax) +
-     &                                 (err4**2*imax*jmax))
-     &                               / ( 2*imax*jmax ) )
+cRA comment out lines 190 to 209 to remove the opening of the observational file (for EMBM outputs)
+c      err3 = err_embm(tqavg(1,1:imax,1:jmax), 1, imax, jmax, indir_name,
+c     $     lenin, tdatafile, lentdata, tdata_scaling, tdata_offset,
+c     $     tqinterp, tdata_varname, tdata_missing, lon, lat)
+c      if (qdata_rhum) then
+c         err4 = err_embm(
+cc     qdryavg(1:imax,1:jmax),
+c     &        rq_pa_avg, 2, imax, jmax, indir_name,
+c     $        lenin, qdatafile, lenqdata, qdata_scaling, qdata_offset,
+c     $        tqinterp, qdata_varname, qdata_missing, lon, lat)
+c      else
+c         err4 = err_embm(
+cc     qdryavg(1:imax,1:jmax),
+c     &        q_pa_avg, 2, imax, jmax, indir_name,
+c     $        lenin, qdatafile, lenqdata, qdata_scaling, qdata_offset,
+c     $        tqinterp, qdata_varname, qdata_missing, lon, lat)
+c      endif
+c      print*,'err_embm annual average composite = ',
+c     &                          sqrt( ((err3**2*imax*jmax) +
+c     &                                 (err4**2*imax*jmax))
+c     &                               / ( 2*imax*jmax ) )
 c end of diagnostic error calculation
 
 c KICO (22/11/06): calculate the atmosphere water content,

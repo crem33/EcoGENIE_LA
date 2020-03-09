@@ -98,7 +98,7 @@ eg_ns          =   2
 
 eg_respir_a    = 0
 
-eg_beta_mort_a =  1.56 # Maximum fraction to DOM as ESD --> zero     # Default value 0.8
+eg_beta_mort_a =   0.8 # Maximum fraction to DOM as ESD --> zero     # Default value 0.8
 eg_beta_mort_b =   0.4 # Minimum fraction to DOM as ESD --> infinity 
 eg_beta_mort_c = 100.0 # Size at 50:50 partition (default = 100 µm^3)
 eg_beta_graz_a =   0.8 # Maximum fraction to DOM as ESD --> zero
@@ -109,7 +109,7 @@ eg_par_bio_red_POC_CaCO3     = 0.0285 # underlying export CaCO3 as a proportion 
 eg_par_bio_red_POC_CaCO3_pP  = 0.7440 # exponent for modifier of CaCO3:POC export ratio
 
 eg_nsubtime                 =25
-eg_n_keco                   =1
+eg_n_keco                   =6
 
 # disable ECOGEM restarts (as not currently coded up / used)
 eg_ctrl_ncrst               =.false.

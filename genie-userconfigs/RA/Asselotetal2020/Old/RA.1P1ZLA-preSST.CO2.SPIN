@@ -125,10 +125,10 @@ ma_debug_loop=1
 # --- FORCINGS ------------------------------------------------------
 #
 # specify forcings
-bg_par_forcing_name="worjh2.FeMahowald2006.SST.CO2.1P1ZLA"
+bg_par_forcing_name="worjh2.FeMahowald2006.CO2.1P1ZLA"
 bg_par_atm_force_scale_val_3=291.103E-06
 bg_par_atm_force_scale_val_4=-6.5
-#bg_par_ocn_force_scale_val_1=1.86
+#bg_par_ocn_force_scale_val_1=18.0
 #
 # --- MISC ----------------------------------------------------------
 #

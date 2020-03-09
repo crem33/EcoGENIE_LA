@@ -3,7 +3,7 @@
   \/ \/ \/ \/   \/ \/ \/  \/  \/  \/
 
 -START-OF-DATA-
-  1  t  f  1.0  f  t  2   01  01  01             '[temperature (K)]'
+  1  t  f  3.0  f  t  -1  01  01  01             '[temperature (K)]'
 -END-OF-DATA-
 
   /\ /\ /\ /\   /\ /\ /\  /\  /\  /\

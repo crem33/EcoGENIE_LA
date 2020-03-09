@@ -749,8 +749,10 @@ c average the last nyear steps in every ianav steps (if ianav>nyear)
          else
             iout = 0
          endif
-         if (debug_loop) 
-     :      call diagosc(istep, iout, ext, fx0flux, fwflux, wstress)
+cRA -> I remove the if (debug_loop) and remove ":" in front of the call diagnosc for the goldstein outputs
+c         if (debug_loop) 
+c     :      call diagosc(istep, iout, ext, fx0flux, fwflux, wstress)
+           call diagosc(istep, iout, ext, fx0flux, fwflux, wstress)
       endif
       endif
 

@@ -1,4 +1,4 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Mon Sep 16 15:58:09 2019
+        !COMPILER-GENERATED INTERFACE MODULE: Fri Mar  6 15:34:01 2020
         ! This source file is for reference only and may not completely
         ! represent the generated interface used by the compiler.
         MODULE GET1D_SLICE_COMP_NC__genmod

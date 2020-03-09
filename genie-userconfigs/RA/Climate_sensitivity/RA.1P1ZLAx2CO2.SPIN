@@ -98,7 +98,7 @@ eg_ns          =   2
 
 eg_respir_a    = 0
 
-eg_beta_mort_a =  1.78 # Maximum fraction to DOM as ESD --> zero     # Default value 0.8
+eg_beta_mort_a =   0.8 # Maximum fraction to DOM as ESD --> zero     # Default value 0.8
 eg_beta_mort_b =   0.4 # Minimum fraction to DOM as ESD --> infinity 
 eg_beta_mort_c = 100.0 # Size at 50:50 partition (default = 100 µm^3)
 eg_beta_graz_a =   0.8 # Maximum fraction to DOM as ESD --> zero

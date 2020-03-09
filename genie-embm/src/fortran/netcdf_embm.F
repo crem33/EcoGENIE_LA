@@ -121,15 +121,24 @@ c
      :                  dimname,varname,attdimname,
      :                  attvarname)
 c
-ccc write(cyear,'(i10.10)')iyear
+c      write(cyear,'(i10.10)')iyear
 c AY (19/03/04) : run identifier added to netCDF file names
+cRA comment out the loop and create a new one for the EMBM outputs
+c      if (imode.eq.1) then
+c         fname1=dir_name(1:ilen)//'embm_'//runid(1:3)//'_rs_'
+c     :        //cyear//'_'//cmon(imonth)//'.nc'
+c      else if (imode.eq.2) then
+c         fname1=dir_name(1:ilen)//'embm_'//runid(1:3)//'_av_'
+c     :        //cyear//'_'//cmon(imonth)//'.nc'
+c      end if
+c new loop
       if (imode.eq.1) then
-         fname1=dir_name(1:ilen)//'embm_'//runid(1:3)//'_rs_'
-     :        //cyear//'_'//cmon(imonth)//'.nc'
+        fname1=dir_name(1:ilen)//'embm_'//runid(1:3)//'_rs.nc'
       else if (imode.eq.2) then
-         fname1=dir_name(1:ilen)//'embm_'//runid(1:3)//'_av_'
-     :        //cyear//'_'//cmon(imonth)//'.nc'
-      end if
+        fname1=dir_name(1:ilen)//'embm_'//runid(1:3)//'_av.nc'
+      end if 
+c end new loop
+
 c
       ifname1=lnsig(fname1)
 ccc print*,' Opening ',fname1(1:ifname1)

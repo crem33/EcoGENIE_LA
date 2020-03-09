@@ -266,19 +266,20 @@ c AP (03/08/06) : Call external error function
          depth(k)=abs(zro(kmax+1-k)*dsc)
       enddo
       ntot1 = 0
-      err1 = err_gold(tsavg(1,1:imax,1:jmax,1:kmax), 1, k1, ntot1, imax,
-     $     jmax, kmax, indir_name, lenin, tdatafile, lentdata,
-     $     tdata_scaling, tdata_offset, tsinterp, tdata_varname,
-     $     tdata_missing, lon, lat, depth)
-      ntot2 = 0
-      err2 = err_gold(tsavg(2,1:imax,1:jmax,1:kmax), 2, k1, ntot2, imax,
-     $     jmax, kmax, indir_name, lenin, sdatafile, lensdata,
-     $     sdata_scaling, sdata_offset+saln0, tsinterp, sdata_varname,
-     $     sdata_missing, lon, lat, depth)
-      print*,'err_gold annual average composite = ',
-     &                               sqrt( ((err1**2*ntot1) +
-     &                                      (err2**2*ntot2))
-     &                                    / ( ntot1 + ntot2) )
+cRA comment out lines 270 to 282 to remove the opening of the observational file (for GOLDSTEIN outputs) 
+c      err1 = err_gold(tsavg(1,1:imax,1:jmax,1:kmax), 1, k1, ntot1, imax,
+c     $     jmax, kmax, indir_name, lenin, tdatafile, lentdata,
+c     $     tdata_scaling, tdata_offset, tsinterp, tdata_varname,
+c     $     tdata_missing, lon, lat, depth)
+c      ntot2 = 0
+c      err2 = err_gold(tsavg(2,1:imax,1:jmax,1:kmax), 2, k1, ntot2, imax,
+c     $     jmax, kmax, indir_name, lenin, sdatafile, lensdata,
+c     $     sdata_scaling, sdata_offset+saln0, tsinterp, sdata_varname,
+c     $     sdata_missing, lon, lat, depth)
+c      print*,'err_gold annual average composite = ',
+c     &                               sqrt( ((err1**2*ntot1) +
+c     &                                      (err2**2*ntot2))
+c     &                                    / ( ntot1 + ntot2) )
 c end of diagnostic error calculation
 c
 c compute total water content of planet (should be numerically const.)

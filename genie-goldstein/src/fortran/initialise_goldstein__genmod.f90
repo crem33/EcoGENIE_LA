@@ -1,4 +1,4 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Mon Sep 16 15:58:21 2019
+        !COMPILER-GENERATED INTERFACE MODULE: Fri Mar  6 15:34:14 2020
         ! This source file is for reference only and may not completely
         ! represent the generated interface used by the compiler.
         MODULE INITIALISE_GOLDSTEIN__genmod
@@ -24,8 +24,8 @@
               REAL(KIND=8) :: OBOXEDGE2_LAT(37)
               REAL(KIND=8) :: OBOXEDGE3_LON(37)
               REAL(KIND=8) :: OBOXEDGE3_LAT(37)
-              REAL(KIND=8) :: DEPTH(16)
-              REAL(KIND=8) :: DEPTH1(17)
+              REAL(KIND=8) :: DEPTH(32)
+              REAL(KIND=8) :: DEPTH1(33)
               INTEGER(KIND=4) :: ILANDMASK1(36,36)
               INTEGER(KIND=4) :: ILANDMASK2(36,36)
               INTEGER(KIND=4) :: ILANDMASK3(36,36)
@@ -56,8 +56,8 @@
               REAL(KIND=8) :: GO_CPSC
               REAL(KIND=8) :: GO_SCF
               INTEGER(KIND=4) :: GO_K1(36,36)
-              REAL(KIND=8) :: GO_DZ(16)
-              REAL(KIND=8) :: GO_DZA(16)
+              REAL(KIND=8) :: GO_DZ(32)
+              REAL(KIND=8) :: GO_DZA(32)
               INTEGER(KIND=4) :: GO_IAS(36)
               INTEGER(KIND=4) :: GO_IAF(36)
               INTEGER(KIND=4) :: GO_JSF
@@ -65,8 +65,8 @@
               REAL(KIND=8) :: GO_CV(0:36)
               REAL(KIND=8) :: GO_S(0:36)
               REAL(KIND=8) :: GO_SV(0:36)
-              REAL(KIND=8) :: GO_TS(1:14,1:36,1:36,1:16)
-              REAL(KIND=8) :: GO_TS1(1:14,1:36,1:36,1:16)
+              REAL(KIND=8) :: GO_TS(1:14,1:36,1:36,1:32)
+              REAL(KIND=8) :: GO_TS1(1:14,1:36,1:36,1:32)
               REAL(KIND=8) :: GO_RSC
               REAL(KIND=8) :: GO_SYR
               INTEGER(KIND=4) :: GO_NYEAR
