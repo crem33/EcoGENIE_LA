@@ -74,8 +74,14 @@ MODEXT=mod
 # (http://www.unidata.ucar.edu/packages/netcdf/index.html)
 
 ### DEFAULT ###
+<<<<<<< HEAD
 #NETCDF_DIR=/usr/local
 NETCDF_DIR=/scratch/local1/cGENIE/netcdf
+=======
+NETCDF_DIR=/usr/local
+### domino ###
+#NETCDF_DIR=/share/apps
+>>>>>>> daa6dd8122d69542465e95c7fe884b675953b329
 ### eevee ###
 #NETCDF_DIR=/share/apps/netcdf-c-4.4.1.1-fortran-4.4.4
 ### iwan ###
@@ -87,7 +93,7 @@ NETCDF_DIR=/scratch/local1/cGENIE/netcdf
 ### VM ###
 #NETCDF_DIR=/home/mushroom/netcdf/ifort
 ### Ben Mac Pro ###
-###NETCDF_DIR=/opt/local
+#NETCDF_DIR=/opt/local
 
 NETCDF_NAME=netcdf
 

@@ -646,6 +646,7 @@ contains
     call biogem_tracercoupling(                              &
          & go_ts,                                            & ! input/output
          & go_ts1,                                           & ! input/output
+	 & genie_clock,                                     & ! input (matrix)
          & egbg_sfcpart,                                     & ! input
          & egbg_sfcremin,                                    & ! input
          & egbg_sfcocn                                       & ! output

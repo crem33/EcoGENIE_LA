@@ -71,7 +71,7 @@ CONTAINS
        print*,'Simulation start year                               : ',par_misc_t_start
        print*,'Simulation run length (yr)                          : ',par_misc_t_runtime
        print*,'Time as Years Before Present?                       : ',ctrl_misc_t_BP
-       print*,'Simulation stop year                                : ',par_misc_t_stop       
+       print*,'Simulation stop year                                : ',par_misc_t_stop
        ! --- MISC CONTROL -------------------------------------------------------------------------------------------------------- !
        print*,'--- MISC CONTROL -----------------------------------'
        print*,'Salanity normalization?                             : ',ctrl_misc_Snorm
@@ -154,6 +154,10 @@ CONTAINS
        print*,'--- ORGANIC MATTER EXPORT RATIOS -------------------'
        print*,'N/P organic matter Redfield ratio                   : ',par_bio_red_POP_PON
        print*,'C/P organic matter Redfield ratio                   : ',par_bio_red_POP_POC
+       print*,'C/P organic matter set to flexible? ( > 0 = yes)    : ',par_bio_red_PC_flex
+       print*,'PC_alpha1, scaling of flexible C/P ratio            : ',par_bio_red_PC_alpha1
+       print*,'PC_alpha2, offset of flexible C/P ratio             : ',par_bio_red_PC_alpha2
+       print*,'maximum C/P                                         : ',par_bio_red_PC_max
        print*,'O2/P organic matter pseudo-Redfield ratio           : ',par_bio_red_POP_PO2
        print*,'ALK/N alkalinty correction factor                   : ',par_bio_red_PON_ALK
        print*,'Production fraction of dissolved organic matter     : ',par_bio_red_DOMfrac
@@ -175,6 +179,7 @@ CONTAINS
        print*,'Base opal:POC export ratio                          : ',par_bio_red_POC_opal
        print*,'Ridgwell [2001] -- opal:POC KSp for FeT (mol kg-1)  : ',par_part_red_opal_FeTKSp
        print*,'Ridgwell [2001] -- opal:POC offset, FeT (mol kg-1)  : ',par_part_red_opal_FeToff
+       print*,'opal:POC rain ratio option ID string                : ',opt_bio_red_SitoC
        ! --- REMINERALIZATION ---------------------------------------------------------------------------------------------------- !
        print*,'--- REMINERALIZATION -------------------------------'
        print*,'Fraction of POM remin concverted to RDOM            : ',par_bio_remin_RDOMfrac
@@ -206,6 +211,8 @@ CONTAINS
        print*,'Remineralization length #2 for opal                 : ',par_bio_remin_opal_eL2
        print*,'Prescribed particle sinking rate (m d-1)            : ',par_bio_remin_sinkingrate
        print*,'Prescribed scavenging sinking rate (m d-1)          : ',par_bio_remin_sinkingrate_scav
+       print*,'Explicit physical particle sinking rate (m d-1)     : ',par_bio_remin_sinkingrate_physical
+       print*,'Implicit sinking rate for geochem reactions (m d-1) : ',par_bio_remin_sinkingrate_reaction
        print*,'Organic matter carrying capacity of CaCO3           : ',par_bio_remin_ballast_kc
        print*,'Organic matter carrying capacity of opal            : ',par_bio_remin_ballast_ko
        print*,'Organic matter carrying capacity of lithogenics     : ',par_bio_remin_ballast_kl
@@ -214,20 +221,25 @@ CONTAINS
        print*,'Apply a hard tracer oxidant remin threshold?        : ',ctrl_bio_remin_thresh
        print*,'Hard threshold for oxic remin (mol kg-1)            : ',par_bio_remin_cthresh_O2
        print*,'Hard threshold for denitrification (mol kg-1)       : ',par_bio_remin_cthresh_NO3
+       print*,'Hard threshold for FeOOH reduction (mol kg-1)       : ',par_bio_remin_cthresh_FeOOH
        print*,'Hard threshold for sulphate reduction (mol kg-1)    : ',par_bio_remin_cthresh_SO4
        print*,'Catch rapidly-oxidizing species going < 0.0?        : ',ctrl_bio_remin_reminfix
-       print*,'NH4 -> NO3 odixation option                         : ',trim(opt_bio_remin_oxidize_NH4toNO3)
+       print*,'NH4 -> NO3 oxidation option                         : ',trim(opt_bio_remin_oxidize_NH4toNO3)
        print*,'H2S -> SO4 oxidation option                         : ',trim(opt_bio_remin_oxidize_H2StoSO4)
        print*,'H2S -> POCS scavenging option                       : ',trim(opt_bio_remin_scavenge_H2StoPOMS)
+       print*,'Old local residence time in layer for H2S?          : ',ctrl_scav_H2S_dt_old
        print*,'Remin rate -- oxic (yr-1)                           : ',par_bio_remin_k_O2
        print*,'Remin rate -- denitrification (yr-1)                : ',par_bio_remin_k_NO3
+       print*,'Remin rate -- FeOOH reduction (yr-1)                : ',par_bio_remin_k_FeOOH
        print*,'Remin rate -- sulphate reduction (yr-1)             : ',par_bio_remin_k_SO4
        print*,'Remin rate -- methanogenesis (yr-1)                 : ',par_bio_remin_k_meth
        print*,'Half-saturation for oxic remin (mol kg-1)           : ',par_bio_remin_c0_O2
        print*,'Half-saturation for denitrification (mol kg-1)      : ',par_bio_remin_c0_NO3
+       print*,'Half-saturation for FeOOH reduction (mol kg-1)      : ',par_bio_remin_c0_FeOOH
        print*,'Half-saturation for sulphate reduction (mol kg-1)   : ',par_bio_remin_c0_SO4
        print*,'Inhibition constant by oxygen (mol kg-1)            : ',par_bio_remin_ci_O2
        print*,'Inhibition constant by nitrate (mol kg-1)           : ',par_bio_remin_ci_NO3
+       print*,'Inhibition constant by FeOOH (mol kg-1)             : ',par_bio_remin_ci_FeOOH
        print*,'Inhibition constant by sulphate (mol kg-1)          : ',par_bio_remin_ci_SO4
        print*,'Oxidation rate constant for H2S -> SO4              : ',par_bio_remin_kH2StoSO4
        print*,'Oxidation rate constant for NH4 -> NO2              : ',par_bio_remin_kNH4toNO2
@@ -283,6 +295,10 @@ CONTAINS
        print*,'44/40Ca fractionation between Ca and CaCO3          : ',par_d44Ca_CaCO3_epsilon
        print*,'88/86Sr fractionation between Sr and SrCO3          : ',par_d88Sr_SrCO3_epsilon
        print*,'methanogenesis fractionation                        : ',par_d13C_Corg_CH4_epsilon
+       print*,'sulphate reduction S-fractionation                  : ',par_d34S_Corg_SO4_epsilon
+       print*,'N2 fixation 15N fractionation                       : ',par_bio_uptake_dN2_epsilon
+       print*,'NH4 assimilation 15N fractionation                  : ',par_bio_uptake_dNH4_epsilon
+       print*,'NO3 uptake 15N fractionation                        : ',par_bio_uptake_dNO3_epsilon
        ! --- IRON CYCLING -------------------------------------------------------------------------------------------------------- !
        print*,'--- IRON CYCLING -----------------------------------'
        print*,'Aeolian Fe solubility                               : ',par_det_Fe_sol
@@ -290,6 +306,7 @@ CONTAINS
        print*,'Fixed cellular Fe:C ratio?                          : ',ctrl_bio_red_fixedFetoC
        print*,'C/Fe organic matter ratio                           : ',par_bio_red_POFe_POC
        print*,'Fixed scavening rate (if not: Parekh scheme)?       : ',ctrl_bio_Fe_fixedKscav
+       print*,'Fe scavening scheme ID string                       : ',trim(opt_bio_Fe_scav)
        print*,'Fixed Fe scavenging rate (d-1)                      : ',par_scav_Fe_Ks
        print*,'Parekh Fe scavenging rate scale factor: POC         : ',par_scav_Fe_sf_POC
        print*,'Parekh Fe scavenging rate scale factor: CaCO3       : ',par_scav_Fe_sf_CaCO3
@@ -346,6 +363,30 @@ CONTAINS
        print*,'Minimum ohmega threshold for precip                 : ',par_bio_CaCO3precip_abioticohm_min
        print*,'Scale factor for CaCO3 precipitation                : ',par_bio_CaCO3precip_sf
        print*,'Rate law power for CaCO3 precipitation              : ',par_bio_CaCO3precip_exp
+       print*,'Minimum ohmega threshold for precip                 : ',par_bio_FeCO3precip_abioticohm_min
+       print*,'Scale factor for FeCO3 precipitation                : ',par_bio_FeCO3precip_sf
+       print*,'Rate law power for FeCO3 precipitation              : ',par_bio_FeCO3precip_exp
+       print*,'Ohnega constant for FeCO3 preciptiation             : ',par_bio_FeCO3precip_abioticohm_cte
+       print*,'Fe fractionation factor for FeCO3 precipitation     : ',par_d56Fe_FeCO3_alpha
+       print*,'kinetic constant for FeS2 precipitation             : ',par_bio_FeS2precip_k
+       print*,'Ohmega constant for nanoparticulate FeS formation   : ',par_bio_FeS_part_abioticohm_cte
+       print*,'Fe fractionation factor for FeS2 precipitation      : ',par_d56Fe_FeS2_alpha
+       print*,'S fractionation factor for FeS2 precipitation       : ',par_d34S_FeS2_alpha
+       print*,'MM type limiting factor for FeS2 precipitation      : ',par_k_lim_pyr
+       print*,'Minimum ohmega threshold for precip                 : ',par_bio_FeS_abioticohm_min
+       print*,'Scale factor for FeS formation                      : ',par_bio_FeS_sf
+       print*,'Rate law power for FeS formation                    : ',par_bio_FeS_exp
+       print*,'pyrite precip stiochiometry                         : ',ctrl_bio_FeS2precip_explicit
+       print*,'Ohnega constant for FeS formation                   : ',par_bio_FeS_abioticohm_cte       
+       print*,'kinetic constant for Fe2 oxidation                  : ',par_bio_remin_kFe2toFe
+       print*,'Fe fractionation factor for Fe2 re-oxidation        : ',par_d56Fe_Fe2ox_alpha 
+       print*,'Fe fractionation factor for FeOOH precipitation     : ',par_d56Fe_FeOOH_alpha 
+       print*,'let FeOOH precipitate explictely?                   : ',ctrl_bio_FeOOHprecip_explicit 
+       print*,'threshold of dissolved Fe for FeOOH repcip          : ',par_FeOOH_Fethresh
+       print*,'kinetic constant for Fe reduction                   : ',par_bio_remin_kFetoFe2
+       print*,'kinetic constant for FeOOH reduction                : ',par_bio_remin_kFeOOHtoFe2
+       print*,'Fe fractionation factor for Fe reduction with S     : ',par_d56Fe_Fered_alpha
+       print*,'S fractionation factor for S oxidation with Fe      : ',par_d34S_Fered_alpha       
        ! --- I/O DIRECTORY DEFINITIONS ------------------------------------------------------------------------------------------- !
        print*,'--- I/O DIRECTORY DEFINITIONS ----------------------'
        print*,'(Paleo config) input dir. name                      : ',trim(par_pindir_name)
@@ -397,7 +438,7 @@ CONTAINS
        print*,'Filename for time-series definition input           : ',trim(par_infile_sig_name)
        print*,'Auto save at run end?                               : ',ctrl_data_save_sig_autoend
        print*,'Save high res 3D data (@ time-series frequency)?    : ',ctrl_data_save_3d_sig
-       print*,'Save 3D data at a particular ij location?           : ',ctrl_data_save_ocn_3D_ij       
+       print*,'Save 3D data at a particular ij location?           : ',ctrl_data_save_ocn_3D_ij
        ! --- DATA SAVING: DIAGNOSTICS -------------------------------------------------------------------------------------------- !
        print*,'--- BIOGEM DATA SAVING: DIAGNOSTICS ----------------'
        print*,'Create pre-formed tracers?                          : ',ctrl_bio_preformed
@@ -429,7 +470,6 @@ CONTAINS
        print*,'Audit tracer inventory?                             : ',ctrl_audit
        print*,'Halt on audit fail?                                 : ',ctrl_audit_fatal
        print*,'Max allowed relative tracer inventory change        : ',par_misc_audit_relerr
-       print*,'Report all run-time warnings?                       : ',ctrl_debug_reportwarnings
        print*,'Report level #0 debug?                              : ',ctrl_debug_lvl0
        print*,'Report level #1 debug?                              : ',ctrl_debug_lvl1
        print*,'Report level #2 debug?                              : ',ctrl_debug_lvl2
@@ -455,12 +495,14 @@ CONTAINS
        print*,'Scaling C burial flux relative to emissions         : ',par_force_invert_fCorgburial
        print*,'Force explicit inversion?                           : ',ctrl_force_invert_explicit
        print*,'Automatic ocean age tracer?                         : ',ctrl_force_ocn_age
+       ! --- TRANSPORT MATRIX ------------------------------------------------------------------------------------------------------ !
+       print*,'Diagnose transport matrix during run?		: ',ctrl_data_diagnose_TM
+       print*,'Year to start diagnosing transport matrix	: ',par_data_TM_start
+       print*,'Number of intervals within a year to diagnose transport matrix		: ',par_data_TM_avg_n
        ! #### INSERT CODE TO LOAD ADDITIONAL PARAMETERS ########################################################################## !
        !
        ! ######################################################################################################################### !
     end if
-    ! filter CaCO3:POC rain ratio options for backwards compatability
-    if (ctrl_force_CaCO3toPOCrainratio) opt_bio_CaCO3toPOCrainratio = 'prescribed'
     ! ### TO BE CONVERTED TO NAMELIST ITEMS ###################################################################################### !
     par_misc_t_err = 3600.0*1.0/conv_yr_s ! time-stepping error == 1hr
     opt_data(iopt_data_save_timeslice_fnint) = .FALSE.
@@ -478,11 +520,23 @@ CONTAINS
     par_part_red_FeTmin = 0.125E-9 ! (see: Ridgwell [2001])
     par_part_red_FetoCmax = 250000.0 !
     ! ############################################################################################################################ !
-
-    ! *** COMPLETE PATHS ***
-    par_fordir_name = trim(par_fordir_name)//trim(par_forcing_name)//'/'
-
-    ! *** adjust units ***
+    ! -------------------------------------------------------- !
+    ! BAKCWARDS COMPATABILITY
+    ! -------------------------------------------------------- !
+    ! -------------------------------------------------------- ! translate default Fe scavening scheme
+    if (.NOT. ctrl_bio_Fe_fixedKscav) then
+       opt_bio_Fe_scav = 'Parekh'
+    end if
+    ! filter CaCO3:POC rain ratio options for backwards compatability
+    if (ctrl_force_CaCO3toPOCrainratio) opt_bio_CaCO3toPOCrainratio = 'prescribed'
+    ! sinking -- if par_bio_remin_sinkingrate_physical not set, then re-use values specific by original parameter names
+    if (par_bio_remin_sinkingrate_physical < const_real_nullsmall) then
+       par_bio_remin_sinkingrate_physical = par_bio_remin_sinkingrate
+       par_bio_remin_sinkingrate_reaction = par_bio_remin_sinkingrate_scav
+    end if
+    ! -------------------------------------------------------- !
+    ! adjust units
+    ! -------------------------------------------------------- !
     ! adjust units of nutrient update time-scale from days to years
     par_bio_tau     = conv_d_yr*par_bio_tau
     par_bio_tau_sp  = conv_d_yr*par_bio_tau_sp
@@ -490,19 +544,24 @@ CONTAINS
     ! adjust units of scavening rate constant (d-1 -> yr-1)
     par_scav_Fe_ks = par_scav_Fe_ks/conv_d_yr
     ! adjust units of prescribed particulates sinking rate (m d-1 -> m yr-1)
-    par_bio_remin_sinkingrate = par_bio_remin_sinkingrate/conv_d_yr
-    par_bio_remin_sinkingrate_scav = par_bio_remin_sinkingrate_scav/conv_d_yr
+    par_bio_remin_sinkingrate_physical = par_bio_remin_sinkingrate_physical/conv_d_yr
+    par_bio_remin_sinkingrate_reaction = par_bio_remin_sinkingrate_reaction/conv_d_yr
     ! adjust units of CH4 oxidation (d-1 -> yr-1)
     par_bio_remin_CH4rate = par_bio_remin_CH4rate/conv_d_yr
-    ! 
+    ! opal dissolution
     par_bio_remin_opal_K = par_bio_remin_opal_K/conv_d_yr ! opal particulate base dissolution rate (d-1 -> yr-1) [Ridgwell, 2001]
-    ! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     ! ballast coefficients (g POC m-2 yr-1 (g ballast m-2 yr-1)-1 -> mol POC m-2 yr-1 (mol ballast m-2 yr-1)-1)
     par_bio_remin_ballast_kc = (conv_POC_cm3_mol*conv_POC_g_cm3/(conv_cal_cm3_mol*conv_cal_g_cm3))*par_bio_remin_ballast_kc
     par_bio_remin_ballast_ko = (conv_POC_cm3_mol*conv_POC_g_cm3/(conv_opal_cm3_mol*conv_opal_g_cm3))*par_bio_remin_ballast_ko
     par_bio_remin_ballast_kl = (conv_POC_cm3_mol*conv_POC_g_cm3/(conv_det_cm3_mol*conv_det_g_cm3))*par_bio_remin_ballast_kl
-    ! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+    ! -------------------------------------------------------- !
+    ! MISC
+    ! -------------------------------------------------------- !
+    ! -------------------------------------------------------- ! complete path
+    par_fordir_name = trim(par_fordir_name)//trim(par_forcing_name)//'/'
+    ! -------------------------------------------------------- !
+    ! END
+    ! -------------------------------------------------------- !
   END SUBROUTINE sub_load_goin_biogem
   ! ****************************************************************************************************************************** !
 
@@ -649,6 +708,7 @@ CONTAINS
   ! INITIALIZE 'BIOLOGICAL' PARAMETERS AND VARIABLES
   SUBROUTINE sub_init_bio()
     ! local variables
+    integer::i,j              !malod: for flexible stoichiometry
     CHARACTER(len=255)::loc_filename
 
     ! *** initialize global arrays ***
@@ -668,9 +728,34 @@ CONTAINS
     bio_part_red(is_POFe,is_POFe,:,:)   = 1.0
     ! set values and derived values
     ! NOTE: relate everything to carbon units where it is not already
+    ! NOTE2: Variable P:C ratio coded by malod
     IF (abs(par_bio_red_POP_POC) > const_real_nullsmall) then
-       bio_part_red(is_POP,is_POC,:,:) = par_bio_red_POP_POC
-       bio_part_red(is_POC,is_POP,:,:) = 1.0/bio_part_red(is_POP,is_POC,:,:)
+       ! par_bio_red_PC_flex = 1 --> activate variable stoichiometry
+       ! par_bio_red_PC_flex = 2 --> activate variable stoichiometry with limit at high PO4
+       ! par_bio_red_PC_flex = 0 --> default fixed Redfield stoichiometry
+       if (par_bio_red_PC_flex > 0) then
+          ! default par_bio_red_PC_alpha1 = 1.0
+          ! default par_bio_red_PC_alpha2 = 1.0
+          ! to achieve average P:C more similar to fixed Redfield modern run, use  PC_alpha1 = 1.1643
+          ! an alternative is to scale only PC_alpha2 = 1.16
+          DO i = 1,n_i
+             do j = 1,n_j
+                bio_part_red(is_POC,is_POP,i,j) = par_bio_red_PC_alpha1 * (6.9e-3 * ocn(io_PO4,i,j,n_k)*1.0e6 + par_bio_red_PC_alpha2*6.0e-3)
+                if (par_bio_red_PC_flex > 1) then  ! limit C:P for high PO4 (no data for PO4 > 1.7 uM in Galbraith & Martiny, 2015)
+                   if (bio_part_red(is_POC,is_POP,i,j) > par_bio_red_PC_max) then
+                      bio_part_red(is_POC,is_POP,i,j) = par_bio_red_PC_max
+                   end if
+                end if
+                bio_part_red(is_POP,is_POC,i,j) = 1.0/bio_part_red(is_POC,is_POP,i,j)
+             end do
+          end DO
+       elseif (par_bio_red_PC_flex == -1) then
+          bio_part_red(is_POC,is_POP,:,:) = par_bio_red_PC_max
+          bio_part_red(is_POP,is_POC,:,:) = 1.0/bio_part_red(is_POC,is_POP,:,:)
+       else
+          bio_part_red(is_POP,is_POC,:,:) = par_bio_red_POP_POC
+          bio_part_red(is_POC,is_POP,:,:) = 1.0/bio_part_red(is_POP,is_POC,:,:)
+       end if
     end if
     IF (abs(par_bio_red_POP_PON) > const_real_nullsmall) then
        bio_part_red(is_POP,is_PON,:,:) = par_bio_red_POP_PON
@@ -827,8 +912,8 @@ CONTAINS
     ! DEFINE LOCAL VARIABLES
     ! -------------------------------------------------------- !
     integer::n
-    CHARACTER(len=31),DIMENSION(:),ALLOCATABLE::loc_string     !  
-    integer::lo,ls 
+    CHARACTER(len=31),DIMENSION(:),ALLOCATABLE::loc_string     !
+    integer::lo,ls
     integer::loc_m,loc_tot_m
     ! -------------------------------------------------------- !
     ! INITIALIZE LOCAL VARIABLES
@@ -842,65 +927,89 @@ CONTAINS
     if (ocn_select(io_H2S)) then
        if (ocn_select(io_O2)) then
           n = n+1
-          loc_string(n) = 'H2StoSO4_dH2S'
+          loc_string(n) = 'redox_H2StoSO4_dH2S'
           n = n+1
-          loc_string(n) = 'H2StoSO4_dSO4'
+          loc_string(n) = 'redox_H2StoSO4_dSO4'
           n = n+1
-          loc_string(n) = 'H2StoSO4_dO2' 
+          loc_string(n) = 'redox_H2StoSO4_dO2' 
           n = n+1
-          loc_string(n) = 'H2StoSO4_dALK'     
+          loc_string(n) = 'redox_H2StoSO4_dALK'  
        end if
     end if
     if (ocn_select(io_NH4)) then
        if (ocn_select(io_O2)) then
           n = n+1
-          loc_string(n) = 'NH4toNO3_dNH4'
+          loc_string(n) = 'redox_NH4toNO3_dNH4'
           n = n+1
-          loc_string(n) = 'NH4toNO3_dNO3'
+          loc_string(n) = 'redox_NH4toNO3_dNO3'
           n = n+1
-          loc_string(n) = 'NH4toNO3_dO2'  
+          loc_string(n) = 'redox_NH4toNO3_dO2'  
           n = n+1
-          loc_string(n) = 'NH4toNO3_dALK'   
+          loc_string(n) = 'redox_NH4toNO3_dALK'  
        end if
     end if
     if (ocn_select(io_CH4)) then
        if (ocn_select(io_O2)) then
           n = n+1
-          loc_string(n) = 'CH4toDIC_dCH4'
+          loc_string(n) = 'redox_CH4toDIC_dCH4'
           n = n+1
-          loc_string(n) = 'CH4toDIC_dCO2'
+          loc_string(n) = 'redox_CH4toDIC_dCO2'
           n = n+1
-          loc_string(n) = 'CH4toDIC_dO2'   
+          loc_string(n) = 'redox_CH4toDIC_dO2'   
           n = n+1
-          loc_string(n) = 'CH4toDIC_dALK'   
+          loc_string(n) = 'redox_CH4toDIC_dALK'   
        end if
        if (ocn_select(io_SO4)) then
           n = n+1
-          loc_string(n) = 'CH4toDICaom_dCH4'
+          loc_string(n) = 'redox_CH4toDICaom_dCH4'
           n = n+1
-          loc_string(n) = 'CH4toDICaom_dDIC'
+          loc_string(n) = 'redox_CH4toDICaom_dDIC'
           n = n+1
-          loc_string(n) = 'CH4toDICaom_dH2S'   
+          loc_string(n) = 'redox_CH4toDICaom_dH2S'   
           n = n+1
-          loc_string(n) = 'CH4toDICaom_dSO4'  
+          loc_string(n) = 'redox_CH4toDICaom_dSO4'  
           n = n+1
-          loc_string(n) = 'CH4toDICaom_dALK'      
+          loc_string(n) = 'redox_CH4toDICaom_dALK'  
        end if
     end if
     if (ocn_select(io_I) .AND. ocn_select(io_I)) then
        if (ocn_select(io_O2)) then
           n = n+1
-          loc_string(n) = 'ItoIO3_dI'
+          loc_string(n) = 'redox_ItoIO3_dI'
           n = n+1
-          loc_string(n) = 'ItoIO3_dIO3'
+          loc_string(n) = 'redox_ItoIO3_dIO3'
           n = n+1
-          loc_string(n) = 'ItoIO3_dO2'  
+          loc_string(n) = 'redox_ItoIO3_dO2'  
           n = n+1
-          loc_string(n) = 'IO3toI_dI'
+          loc_string(n) = 'redox_IO3toI_dI'
           n = n+1
-          loc_string(n) = 'IO3toI_dIO3'
+          loc_string(n) = 'redox_IO3toI_dIO3'
           n = n+1
-          loc_string(n) = 'IO3toI_dO2'  
+          loc_string(n) = 'redox_IO3toI_dO2'  
+       end if
+    end if
+    if (ocn_select(io_Fe2) .AND. ocn_select(io_Fe)) then
+       if (ocn_select(io_O2)) then
+          n = n+1
+          loc_string(n) = 'redox_Fe2toFe3_dFe2'
+          n = n+1
+          loc_string(n) = 'redox_Fe2toFe3_dFe'
+          n = n+1
+          loc_string(n) = 'redox_Fe2toFe3_dO2'  
+       end if
+    end if
+    if (ocn_select(io_Fe2) .AND. ocn_select(io_Fe) .AND. ocn_select(io_H2S)) then
+       if (ocn_select(io_O2)) then
+          n = n+1
+          loc_string(n) = 'redox_Fe3toFe2_dFe'
+          n = n+1
+          loc_string(n) = 'redox_Fe3toFe2_dFe2'
+          n = n+1
+          loc_string(n) = 'redox_Fe3toFe2_dH2S'  
+          n = n+1
+          loc_string(n) = 'redox_Fe3toFe2_dSO4'  
+          n = n+1
+          loc_string(n) = 'redox_Fe3toFe2_dALK'  
        end if
     end if
     ! -------------------------------------------------------- ! (2) solid -> dissolved
@@ -957,6 +1066,10 @@ CONTAINS
 
   ! ****************************************************************************************************************************** !
   ! UPDATE RELATIONSHIPS BETWEEN TRACERS
+  ! NOTE: the reverse transformation array <conv_ocn_sed> was never used and hence is no longer updated here
+  !       (01/01/2019 UPDATE: as has now been removed entirely ...) 
+  ! NOTE: update the basic oxic transformation (<conv_sed_ocn>) first:
+  !       this is used to create particulate matter (e.g. biological uptake) as well as in the tracer auditing calculations
   SUBROUTINE sub_data_update_tracerrelationships()
     ! -------------------------------------------------------- !
     ! DEFINE LOCAL VARIABLES
@@ -968,79 +1081,151 @@ CONTAINS
     ! -------------------------------------------------------- !
     loc_conv_sed_ocn(:,:) = 0.0
     ! -------------------------------------------------------- !
+    ! UPDATE INORGANIC STIOCHIOMETRIES
+    ! -------------------------------------------------------- !
+    ! ALT relationships for pyrite formation
+    ! NOTE: reciprocal array conv_ocn_sed is not used and altered values do not need to be set
+    if (ctrl_bio_FeS2precip_explicit) then
+       ! explicit reaction (the default defined in gem_util) uses dissolved Fe2 but not FeS
+       conv_sed_ocn(io_H2S,is_FeS2)                = 3.0/4.0
+       conv_sed_ocn(io_SO4,is_FeS2)                = 1.0/4.0
+       conv_sed_ocn(io_FeS,is_FeS2)                = 1.0
+       conv_sed_ocn(io_Fe2,is_FeS2)                = 0.0
+       conv_sed_ocn(io_ALK,is_FeS2)                = -2.0/4.0
+       conv_sed_ocn(io_H2S_34S,is_FeS2_34S)        = 3.0/4.0
+       conv_sed_ocn(io_FeS_34S,is_FeS2_34S)        = 1.0
+       conv_sed_ocn(io_FeS_56Fe,is_FeS2_56Fe)      = 1.0
+       conv_sed_ocn(io_Fe2_56Fe,is_FeS2_56Fe)      = 0.0
+    else
+       ! alt reaction uses dissolved Fe2 but not FeS
+       conv_sed_ocn(io_H2S,is_FeS2)                = 7.0/4.0
+       conv_sed_ocn(io_SO4,is_FeS2)                = 1.0/4.0
+       conv_sed_ocn(io_FeS,is_FeS2)                = 0.0
+       conv_sed_ocn(io_Fe2,is_FeS2)                = 1.0
+       conv_sed_ocn(io_ALK,is_FeS2)                = -2.0/4.0
+       conv_sed_ocn(io_H2S_34S,is_FeS2_34S)        = 7.0/4.0
+       conv_sed_ocn(io_FeS_34S,is_FeS2_34S)        = 0.0
+       conv_sed_ocn(io_SO4_34S,is_FeS2_34S)        = 1.0/4.0
+       conv_sed_ocn(io_FeS_56Fe,is_FeS2_56Fe)      = 0.0
+       conv_sed_ocn(io_Fe2_56Fe,is_FeS2_56Fe)      = 1.0
+    end if
+    ! -------------------------------------------------------- !
     ! UPDATE REDFIELD RELATIONSHIPS
     ! -------------------------------------------------------- !
-    ! if NO3 is employed;
-    ! calculate alkalnity corrections associated with the formation and destruction of organic matter from NO3
-    ! otherwise, convert PO4 units to NO3 via the P:N Redfield ratio and then calculate the ALK correction from NO3
+    ! N (in POM)
+    ! NOTE: the default assumption is that the assimilation (and uptake) of N to form PON, is as NO3 (and not N2 or NH4)
+    if (ocn_select(io_NO3)) then
+       conv_sed_ocn(io_NO3,is_PON) = 1.0
+       conv_sed_ocn(io_NH4,is_PON) = 0.0
+       conv_sed_ocn(io_N2,is_PON)  = 0.0
+    else
+       conv_sed_ocn(io_NO3,is_PON) = 0.0
+       conv_sed_ocn(io_NH4,is_PON) = 0.0
+       conv_sed_ocn(io_N2,is_PON)  = 0.0
+    end if
+    ! ALK
+    ! if NO3 is employed: calculate alkalnity corrections associated with the formation and destruction of organic matter from NO3
+    ! otherwise: convert PO4 units to NO3 via the P:N Redfield ratio and then calculate the ALK correction from NO3
     ! NOTE: ensure that both corrections are mutually exclusive (i.e., make sure that there can be no double ALK correction)
-    ! NOTE: catch incidence of par_bio_red_PON_ALK set to 0.0
-    if (abs(par_bio_red_PON_ALK) > const_real_nullsmall) then
-       if (ocn_select(io_NO3)) then
-          conv_sed_ocn(io_ALK,is_PON) = par_bio_red_PON_ALK
-          conv_ocn_sed(is_PON,io_ALK) = 1.0/conv_sed_ocn(io_ALK,is_PON)
-          conv_sed_ocn(io_ALK,is_POP) = 0.0
-          conv_ocn_sed(is_POP,io_ALK) = 0.0
-       else
-          conv_sed_ocn(io_ALK,is_PON) = 0.0
-          conv_ocn_sed(is_PON,io_ALK) = 0.0
-          if (ctrl_bio_red_ALKwithPOC) then
-             conv_sed_ocn(io_ALK,is_POC) = (1.0/par_bio_red_POP_POC)*par_bio_red_POP_PON*par_bio_red_PON_ALK
-             conv_ocn_sed(is_POC,io_ALK) = 1.0/conv_sed_ocn(io_ALK,is_POC)
-          else
-             conv_sed_ocn(io_ALK,is_POP) = par_bio_red_POP_PON*par_bio_red_PON_ALK
-             conv_ocn_sed(is_POP,io_ALK) = 1.0/conv_sed_ocn(io_ALK,is_POP)
-          end if
-       end if
+    ! NOTE: catch any incidence of Redfield ratios (par_bio_red_xxx) set to 0.0
+    if (ocn_select(io_NO3)) then
+       conv_sed_ocn(io_ALK,is_PON) = par_bio_red_PON_ALK
+       conv_sed_ocn(io_ALK,is_POP) = 0.0
+       conv_sed_ocn(io_ALK,is_POC) = 0.0
     else
        conv_sed_ocn(io_ALK,is_PON) = 0.0
-       conv_ocn_sed(is_PON,io_ALK) = 0.0
-       conv_sed_ocn(io_ALK,is_POP) = 0.0
-       conv_ocn_sed(is_POP,io_ALK) = 0.0
+       if (abs(par_bio_red_POP_POC) > const_real_nullsmall) then
+          if (ctrl_bio_red_ALKwithPOC) then
+             conv_sed_ocn(io_ALK,is_POC) = (1.0/par_bio_red_POP_POC)*par_bio_red_POP_PON*par_bio_red_PON_ALK
+             conv_sed_ocn(io_ALK,is_POP) = 0.0
+          else
+             conv_sed_ocn(io_ALK,is_POC) = 0.0
+             conv_sed_ocn(io_ALK,is_POP) = par_bio_red_POP_PON*par_bio_red_PON_ALK
+          end if
+       else
+          conv_sed_ocn(io_ALK,is_POC) = 0.0
+          conv_sed_ocn(io_ALK,is_POP) = 0.0
+       end if
     end if
+    ! O2 (of P, N, C)
     ! update O2 demand associated with organic matter (taken as the carbon component)
     ! reduce O2 demand associated with C (and H) oxidation => treat N and P explicitly
     ! NOTE: set no PON O2 demand if NO3 tracer not selected (and increase POC O2 demand)
     ! NOTE: NO3 uptake assumed as: 2H+ + 2NO3- -> 2PON + (5/2)O2 + H2O
-    !       (and as implemented, ber N, this ends up as (5/2)/2 = 5.0/4.0
+    !       (and as implemented, per mol N, this ends up as (5/2)/2 = 5.0/4.0
+    if (ocn_select(io_NO3)) then
+       conv_sed_ocn(io_O2,is_PON) = -(5.0/4.0)
+    else
+       conv_sed_ocn(io_O2,is_PON) = 0.0
+    end if
+    ! N isotopes (from PON remin)
+    if (sed_select(is_PON_15N)) then
+       conv_sed_ocn(io_NO3_15N,is_PON_15N) = 1.0
+       conv_sed_ocn(io_NH4_15N,is_PON_15N) = 0.0
+       conv_sed_ocn(io_N2_15N,is_PON_15N)  = 0.0
+    end if
+    !
+    if (ctrl_bio_red_O2withPOC) then
+       conv_sed_ocn(io_O2,is_POP) = 0.0
+       conv_sed_ocn(io_O2,is_PON) = 0.0
+    else
+       conv_sed_ocn(io_O2,is_POP) = -4.0/2.0
+    end if
     if (abs(par_bio_red_POP_POC*par_bio_red_POP_PO2) > const_real_nullsmall) then
-       if (ctrl_bio_red_O2withPOC) then
-          conv_sed_ocn(io_O2,is_POP) = 0.0
-          conv_ocn_sed(is_POP,io_O2) = 0.0
-       else
-          conv_sed_ocn(io_O2,is_POP) = -4.0/2.0
-          conv_ocn_sed(is_POP,io_O2) = 1.0/conv_sed_ocn(io_O2,is_POP)
-       endif
-       if (ocn_select(io_NO3)) then
-          conv_sed_ocn(io_O2,is_PON) = -5.0/4.0
-          conv_ocn_sed(is_PON,io_O2) = 1.0/conv_sed_ocn(io_O2,is_PON)
-       else
-          conv_sed_ocn(io_O2,is_PON) = 0.0
-          conv_ocn_sed(is_PON,io_O2) = 0.0
-       endif
        conv_sed_ocn(io_O2,is_POC) = par_bio_red_POP_PO2/par_bio_red_POP_POC - &
             & conv_sed_ocn(io_O2,is_POP)/par_bio_red_POP_POC - &
             & conv_sed_ocn(io_O2,is_PON)*par_bio_red_POP_PON/par_bio_red_POP_POC
-       conv_ocn_sed(is_POC,io_O2) = 1.0/conv_sed_ocn(io_O2,is_POC)
     else
        conv_sed_ocn(io_O2,is_POP) = 0.0
        conv_sed_ocn(io_O2,is_PON) = 0.0
        conv_sed_ocn(io_O2,is_POC) = 0.0
-       conv_ocn_sed(is_POP,io_O2) = 0.0
-       conv_ocn_sed(is_PON,io_O2) = 0.0
-       conv_ocn_sed(is_POC,io_O2) = 0.0
     end if
     ! -------------------------------------------------------- !
     ! UPDATE ALT REDOX SED->OCN RELATIONSHIPS
     ! -------------------------------------------------------- !
     ! NOTE: arrays are only one-way (i.e. there is no equivalent ocn --> sed transformation)
     ! NOTE: remember that conv_sed_ocn(io_O2,is_POC) is *negative*
+    ! -------------------------------------------------------- ! Modify for oxic conditions(!)
+    ! NOTE: the only modifications needed relate to the remin of N in POM
+    ! NOTE: NO3 uptake assumed as: 2H+ + 2NO3- -> 2PON + (5/2)O2 + H2O
+    !       (and as implemented, per mol N, this ends up as (5/2)/2 = 5.0/4.0
+    ! NOTE: to balance the uptake of NO3 into organic matter
+    !       [2H+ + 2NO3- -> 2PON + (5/2)O2 + H2O]
+    !       with the release of N as ammonium and subsequent oxidation to NO3 ...
+    !       [NH4+ + 2O2 -> NO3- + 2H+ + H2O]
+    !       the remin of PON needs to be adjusted in order that everything is conserved:
+    !       2PON + 3H2O + 2H+ --> 2NH4+ + (3/2)O2
+    !       and per N:
+    !       PON + (3/2)H2O + H+ --> NH4+ + (3/4)O2
+    if (ocn_select(io_O2)) then
+       conv_sed_ocn_O(:,:)  = conv_sed_ocn(:,:)
+       ! N
+       if (ocn_select(io_NH4)) then
+          conv_sed_ocn_O(io_NO3,is_PON) = 0.0
+          conv_sed_ocn_O(io_NH4,is_PON) = 1.0
+          conv_sed_ocn_O(io_N2,is_PON)  = 0.0
+       end if
+       ! N isotopes (from PON remin)
+       if (sed_select(is_PON_15N)) then
+          conv_sed_ocn_O(io_NO3_15N,is_PON_15N) = conv_sed_ocn_O(io_NO3,is_PON)
+          conv_sed_ocn_O(io_NH4_15N,is_PON_15N) = conv_sed_ocn_O(io_NH4,is_PON)
+          conv_sed_ocn_O(io_N2_15N,is_PON_15N)  = conv_sed_ocn_O(io_N2,is_PON)
+       end if
+       ! ALK
+       if (ocn_select(io_NH4)) then
+          conv_sed_ocn_O(io_ALK,is_PON) = conv_sed_ocn_O(io_NH4,is_PON)
+       end if
+       ! O2 (of P, N, C)
+       if (ocn_select(io_NH4)) then
+          conv_sed_ocn_O(io_O2,is_PON) = (3.0/4.0)
+       end if
+    end if
     ! -------------------------------------------------------- ! Modify for N-reducing conditions
     ! NOTE: to balance the uptake of NO3 into organic matter
     !       [2H+ + 2NO3- -> 2PON + (5/2)O2 + H2O]
     !       with the release of N as ammonium and subsequent oxidation to NO3 ...
     !       [NH4+ + 2O2 -> NO3- + 2H+ + H2O]
-    !       the remind of PON needs to be adjusted in order that everything is conserved:
+    !       the remin of PON needs to be adjusted in order that everything is conserved:
     !       2PON + 3H2O + 2H+ --> 2NH4+ + (3/2)O2
     !       and per N:
     !       PON + (3/2)H2O + H+ --> NH4+ + (3/4)O2
@@ -1052,70 +1237,145 @@ CONTAINS
     !       e.g. P + (8/5)NO3- + (8/5)H+ -> PO4 + (4/5)N2 + (4/5)H2O
     ! NOTE: assumption for NO2: 2NO3- <-> O2 + 2NO2-
     !                       or: O2 == 2NO3- - 2NO2-
+    ! Wikipedia summary ...
+    ! NO3− + 2 H+ + 2 e−→ NO2− + H2O (Nitrate reductase)
+    ! NO2− + 2 H+ + e− → NO + H2O (Nitrite reductase)
+    ! 2NO + 2 H+ + 2 e− → N2O + H2O (Nitric oxide reductase)
+    ! N2O + 2 H+ + 2 e− → N2 + H2O (Nitrous oxide reductase)
+    ! and ...
+    ! Reduction under anoxic conditions can also occur through process called anaerobic ammonium oxidation (anammox):
+    ! NH4+ + NO2− → N2 + 2 H2O
+    ! NOTE: will have to assume NO2- as part of the ALK balance ... ?
+    !       (then this must be taken inot account when NO or N2O is formed)
+    !
     if (ocn_select(io_NO3)) then
        conv_sed_ocn_N(:,:)  = conv_sed_ocn(:,:)
        ! N
        if (ocn_select(io_NH4)) then
+          ! PON + (3/2)H2O + H+ --> NH4+ + (3/4)O2
           conv_sed_ocn_N(io_NO3,is_PON) = 0.0
           conv_sed_ocn_N(io_NH4,is_PON) = 1.0
           conv_sed_ocn_N(io_ALK,is_PON) = conv_sed_ocn_N(io_NH4,is_PON)
-          conv_sed_ocn_N(io_O2,is_PON)  = (3.0/4.0)
+          conv_sed_ocn_N(io_O2,is_PON)  = (3.0/4.0)*conv_sed_ocn_N(io_NH4,is_PON)
        else
-          conv_sed_ocn_N(io_NO3,is_PON) = 0.0
-          conv_sed_ocn_N(io_N2,is_PON)  = 0.5
-          conv_sed_ocn_N(io_ALK,is_PON) = 0.0
-          conv_sed_ocn_N(io_O2,is_PON)  = 0.0
+          ! [DEFAULT, oxic remin relationship]
        endif
+       ! N isotopes (from PON remin)
+       if (sed_select(is_PON_15N)) then
+          conv_sed_ocn_N(io_NO3_15N,is_PON_15N) = conv_sed_ocn_N(io_NO3,is_PON)
+          conv_sed_ocn_N(io_NH4_15N,is_PON_15N) = conv_sed_ocn_N(io_NH4,is_PON)
+          conv_sed_ocn_N(io_N2_15N,is_PON_15N)  = conv_sed_ocn_N(io_N2,is_PON)
+       end if
        ! P,C
        if (ocn_select(io_NO2)) then
-          conv_sed_ocn_N(io_NO3,is_POP) = -4.0
-          conv_sed_ocn_N(io_NO2,is_POP) = 4.0
+          ! O2 == 2NO3- - 2NO2-
+          conv_sed_ocn_N(io_NO3,is_POP) = 2.0*conv_sed_ocn_N(io_O2,is_POP)
+          conv_sed_ocn_N(io_NO2,is_POP) = -conv_sed_ocn_N(io_NO3,is_POP)
           conv_sed_ocn_N(io_ALK,is_POP) = 0.0
           conv_sed_ocn_N(io_O2,is_POP)  = 0.0
-          conv_sed_ocn_N(io_NO3,is_POC) = 2.0*conv_sed_ocn(io_O2,is_POC)
-          conv_sed_ocn_N(io_NO2,is_POC) = -2.0*conv_sed_ocn(io_O2,is_POC)
+          conv_sed_ocn_N(io_NO3,is_POC) = 2.0*conv_sed_ocn_N(io_O2,is_POC)
+          conv_sed_ocn_N(io_NO2,is_POC) = -conv_sed_ocn_N(io_NO3,is_POC)
           conv_sed_ocn_N(io_ALK,is_POC) = 0.0
           conv_sed_ocn_N(io_O2,is_POC)  = 0.0
-       else
-          conv_sed_ocn_N(io_NO3,is_POP) = -(8.0/5.0)
-          conv_sed_ocn_N(io_N2,is_POP)  = -0.5*conv_sed_ocn_N(io_NO3,is_POP)
+       elseif (ocn_select(io_N2)) then
+          ! O2 == (4/5)NO3- + (4/5)H+ - (2/5)N2 - (2/5)H2O
+          conv_sed_ocn_N(io_NO3,is_POP) = -(4.0/5.0)*conv_sed_ocn_N(io_O2,is_POP)
+          conv_sed_ocn_N(io_N2,is_POP)  = -(1.0/2.0)*conv_sed_ocn_N(io_NO3,is_POP)
           conv_sed_ocn_N(io_ALK,is_POP) = -conv_sed_ocn_N(io_NO3,is_POP)
           conv_sed_ocn_N(io_O2,is_POP)  = 0.0
-          conv_sed_ocn_N(io_NO3,is_POC) = (4.0/5.0)*conv_sed_ocn(io_O2,is_POC)
-          conv_sed_ocn_N(io_N2,is_POC)  = -0.5*conv_sed_ocn_N(io_NO3,is_POC)
+          conv_sed_ocn_N(io_NO3,is_POC) = (4.0/5.0)*conv_sed_ocn_N(io_O2,is_POC)
+          conv_sed_ocn_N(io_N2,is_POC)  = -(1.0/2.0)*conv_sed_ocn_N(io_NO3,is_POC)
           conv_sed_ocn_N(io_ALK,is_POC) = -conv_sed_ocn_N(io_NO3,is_POC)
           conv_sed_ocn_N(io_O2,is_POC)  = 0.0
+       else
+          ! [DEFAULT, oxic remin relationship]
        endif
+       ! N isotopes (from denitrification)
+       !!!
+       ! ALK
+       ! [N transformations are explicit and hence ALK is associated with neither P nor C (excepting nitrate reduction)]
     else
        conv_sed_ocn_N(:,:) = 0.0
+    end if
+    ! -------------------------------------------------------- ! Modify for FeOOH-reducing(!) conditions
+    ! NOTE: Fe3 (io_Fe) is associated with 1/4 O2 (comapred to Fe2 (io_Fe2))
+    ! NOTE: io_FeOOH assumes both io_Fe2 and io_Fe (Fe3)
+    if (ocn_select(io_FeOOH)) then
+       conv_sed_ocn_Fe(:,:) = conv_sed_ocn(:,:)
+       ! N
+       if (ocn_select(io_NH4)) then
+          ! PON + (3/2)H2O + H+ --> NH4+ + (3/4)O2
+          conv_sed_ocn_Fe(io_NO3,is_PON)   = 0.0
+          conv_sed_ocn_Fe(io_NH4,is_PON)   = 1.0
+          conv_sed_ocn_Fe(io_ALK,is_PON)   = conv_sed_ocn_Fe(io_NH4,is_PON)
+          conv_sed_ocn_Fe(io_FeOOH,is_PON) = (4.0/1.0)*(3.0/4.0)*conv_sed_ocn_Fe(io_NH4,is_PON)
+          conv_sed_ocn_Fe(io_O2,is_PON)    = 0.0
+       else
+          ! [DEFAULT, oxic remin relationship]
+       endif
+       ! N isotopes
+       if (sed_select(is_PON_15N)) then
+          conv_sed_ocn_Fe(io_NO3_15N,is_PON_15N) = conv_sed_ocn_Fe(io_NO3,is_PON)
+          conv_sed_ocn_Fe(io_NH4_15N,is_PON_15N) = conv_sed_ocn_Fe(io_NH4,is_PON)
+          conv_sed_ocn_Fe(io_N2_15N,is_PON_15N)  = conv_sed_ocn_Fe(io_N2,is_PON)
+       end if
+       ! P,C
+       conv_sed_ocn_Fe(io_FeOOH,is_POP) = (4.0/1.0)*conv_sed_ocn_Fe(io_O2,is_POP)
+       conv_sed_ocn_Fe(io_Fe2,is_POP)   = -conv_sed_ocn_Fe(io_FeOOH,is_POP)
+       conv_sed_ocn_Fe(io_O2,is_POP)    = 0.0
+       conv_sed_ocn_Fe(io_FeOOH,is_POC) = (4.0/1.0)*conv_sed_ocn_Fe(io_O2,is_POC)
+       conv_sed_ocn_Fe(io_Fe2,is_POC)   = -conv_sed_ocn_Fe(io_FeOOH,is_POC)
+       conv_sed_ocn_Fe(io_O2,is_POC)    = 0.0
+       ! Fe isotopes
+       conv_sed_ocn_Fe(io_FeOOH_56Fe,is_POP) = conv_sed_ocn_Fe(io_FeOOH,is_POP)
+       conv_sed_ocn_Fe(io_Fe_56Fe,is_POP)    = conv_sed_ocn_Fe(io_Fe,is_POP)
+       conv_sed_ocn_Fe(io_FeOOH_56Fe,is_POC) = conv_sed_ocn_Fe(io_FeOOH,is_POC)
+       conv_sed_ocn_Fe(io_Fe_56Fe,is_POC)    = conv_sed_ocn_Fe(io_Fe,is_POC)
+    else
+       conv_sed_ocn_Fe(:,:) = 0.0
     end if
     ! -------------------------------------------------------- ! Modify for S-reducing conditions
     if (ocn_select(io_SO4)) then
        conv_sed_ocn_S(:,:) = conv_sed_ocn(:,:)
        ! N
        if (ocn_select(io_NH4)) then
+          ! PON + (3/2)H2O + H+ --> NH4+ + (3/4)O2
           conv_sed_ocn_S(io_NO3,is_PON) = 0.0
           conv_sed_ocn_S(io_NH4,is_PON) = 1.0
-          conv_sed_ocn_S(io_ALK,is_PON) = conv_sed_ocn_N(io_NH4,is_PON)
-          conv_sed_ocn_S(io_O2,is_PON)  = 0.0
+          conv_sed_ocn_S(io_ALK,is_PON) = conv_sed_ocn_S(io_NH4,is_PON)
+          conv_sed_ocn_S(io_O2,is_PON)  = (3.0/4.0)*conv_sed_ocn_S(io_NH4,is_PON)
        else
-          conv_sed_ocn_S(io_NO3,is_PON) = 0.0
-          conv_sed_ocn_S(io_N2,is_PON)  = 0.5
-          conv_sed_ocn_S(io_ALK,is_PON) = 0.0
-          conv_sed_ocn_S(io_O2,is_PON)  = 0.0
+          ! [DEFAULT, oxic remin relationship]
        endif
+       ! N isotopes
+       if (sed_select(is_PON_15N)) then
+          conv_sed_ocn_S(io_NO3_15N,is_PON_15N) = conv_sed_ocn_S(io_NO3,is_PON)
+          conv_sed_ocn_S(io_NH4_15N,is_PON_15N) = conv_sed_ocn_S(io_NH4,is_PON)
+          conv_sed_ocn_S(io_N2_15N,is_PON_15N)  = conv_sed_ocn_S(io_N2,is_PON)
+       end if
        ! P,C
-       conv_sed_ocn_S(io_SO4,is_POP) = 0.5*conv_sed_ocn_S(io_O2,is_POP)
-       conv_sed_ocn_S(io_H2S,is_POP) = -0.5*conv_sed_ocn_S(io_O2,is_POP)
+       conv_sed_ocn_S(io_SO4,is_POP) = (1.0/2.0)*conv_sed_ocn_S(io_O2,is_POP)
+       conv_sed_ocn_S(io_H2S,is_POP) = -conv_sed_ocn_S(io_SO4,is_POP)
        conv_sed_ocn_S(io_O2,is_POP)  = 0.0
-       conv_sed_ocn_S(io_SO4,is_POC) = 0.5*conv_sed_ocn(io_O2,is_POC)
-       conv_sed_ocn_S(io_H2S,is_POC) = -0.5*conv_sed_ocn(io_O2,is_POC)
+       conv_sed_ocn_S(io_SO4,is_POC) = (1.0/2.0)*conv_sed_ocn_S(io_O2,is_POC)
+       conv_sed_ocn_S(io_H2S,is_POC) = -conv_sed_ocn_S(io_SO4,is_POC)
        conv_sed_ocn_S(io_O2,is_POC)  = 0.0
+       ! S isotopes
+       conv_sed_ocn_S(io_SO4_34S,is_POP) = conv_sed_ocn_S(io_SO4,is_POP)
+       conv_sed_ocn_S(io_H2S_34S,is_POP) = conv_sed_ocn_S(io_H2S,is_POP)
+       conv_sed_ocn_S(io_SO4_34S,is_POC) = conv_sed_ocn_S(io_SO4,is_POC)
+       conv_sed_ocn_S(io_H2S_34S,is_POC) = conv_sed_ocn_S(io_H2S,is_POC)
+       ! ALK
+       if (sed_select(is_PON)) then
+          ! [N transformations are explicit and hence ALK is associated with neither P nor C (excepting sulphate reduction)]
+          conv_sed_ocn_S(io_ALK,is_POP) = 0.0
+          conv_sed_ocn_S(io_ALK,is_POC) = 0.0
+       end if
        if (ctrl_bio_red_ALKwithPOC) then
           conv_sed_ocn_S(io_ALK,is_POP) = -2.0*conv_sed_ocn_S(io_SO4,is_POP)
-          conv_sed_ocn_S(io_ALK,is_POC) = -2.0*conv_sed_ocn_S(io_SO4,is_POC) + conv_sed_ocn(io_ALK,is_POC)
+          conv_sed_ocn_S(io_ALK,is_POC) = -2.0*conv_sed_ocn_S(io_SO4,is_POC) + conv_sed_ocn_S(io_ALK,is_POC)
        else
-          conv_sed_ocn_S(io_ALK,is_POP) = -2.0*conv_sed_ocn_S(io_SO4,is_POP) + conv_sed_ocn(io_ALK,is_POP)
+          conv_sed_ocn_S(io_ALK,is_POP) = -2.0*conv_sed_ocn_S(io_SO4,is_POP) + conv_sed_ocn_S(io_ALK,is_POP)
           conv_sed_ocn_S(io_ALK,is_POC) = -2.0*conv_sed_ocn_S(io_SO4,is_POC)
        end if
     else
@@ -1135,21 +1395,26 @@ CONTAINS
        loc_alpha = 1.0 + par_d13C_Corg_CH4_epsilon/1000.0
        ! N
        if (ocn_select(io_NH4)) then
+          ! PON + (3/2)H2O + H+ --> NH4+ + (3/4)O2
           conv_sed_ocn_meth(io_NO3,is_PON) = 0.0
           conv_sed_ocn_meth(io_NH4,is_PON) = 1.0
-          conv_sed_ocn_meth(io_ALK,is_PON) = conv_sed_ocn_N(io_NH4,is_PON)
-          conv_sed_ocn_meth(io_O2,is_PON)  = 0.0
+          conv_sed_ocn_meth(io_ALK,is_PON) = conv_sed_ocn_meth(io_NH4,is_PON)
+          conv_sed_ocn_meth(io_O2,is_PON)  = (3.0/4.0)*conv_sed_ocn_meth(io_NH4,is_PON)
        else
-          conv_sed_ocn_meth(io_NO3,is_PON) = 0.0
-          conv_sed_ocn_meth(io_N2,is_PON)  = 0.5
-          conv_sed_ocn_meth(io_ALK,is_PON) = 0.0
-          conv_sed_ocn_meth(io_O2,is_PON)  = 0.0
+          ! [DEFAULT, oxic remin relationship]
        endif
+       ! N isotopes
+       if (sed_select(is_PON_15N)) then
+          conv_sed_ocn_meth(io_NO3_15N,is_PON_15N) = conv_sed_ocn_meth(io_NO3,is_PON)
+          conv_sed_ocn_meth(io_NH4_15N,is_PON_15N) = conv_sed_ocn_meth(io_NH4,is_PON)
+          conv_sed_ocn_meth(io_N2_15N,is_PON_15N)  = conv_sed_ocn_meth(io_N2,is_PON)
+       end if
        ! P,C
        conv_sed_ocn_meth(io_O2,is_POP)  = 0.0
-       conv_sed_ocn_meth(io_CH4,is_POC) = -0.5*par_bio_red_POP_PO2/par_bio_red_POP_POC
+       conv_sed_ocn_meth(io_CH4,is_POC) = -(1.0/2.0)*par_bio_red_POP_PO2/par_bio_red_POP_POC
        conv_sed_ocn_meth(io_DIC,is_POC) = 1.0 - conv_sed_ocn_meth(io_CH4,is_POC)
        conv_sed_ocn_meth(io_O2,is_POC)  = 0.0
+       ! C isotopes
        conv_sed_ocn_meth(io_CH4_13C,is_POC_13C) = loc_alpha*conv_sed_ocn_meth(io_CH4,is_POC)
        conv_sed_ocn_meth(io_DIC_13C,is_POC_13C) = 1.0 - conv_sed_ocn_meth(io_CH4_13C,is_POC_13C)
     else
@@ -1157,21 +1422,23 @@ CONTAINS
     end if
     ! -------------------------------------------------------- ! Set local remin array reflecting 'mix' of redox possibilities
     ! NOTE: this is the 'redox tree' of all enabled posibilities
-    !       (possibilities of not having O2 but having a different oxidant are omitted, as are O2 + Fe without SO4)
-    if (ocn_select(io_O2))  loc_conv_sed_ocn(:,:) = loc_conv_sed_ocn(:,:) + abs(conv_sed_ocn)
-    if (ocn_select(io_NO3)) loc_conv_sed_ocn(:,:) = loc_conv_sed_ocn(:,:) + abs(conv_sed_ocn_N)
-    if (ocn_select(io_SO4)) loc_conv_sed_ocn(:,:) = loc_conv_sed_ocn(:,:) + abs(conv_sed_ocn_S)
-    if (ocn_select(io_CH4)) loc_conv_sed_ocn(:,:) = loc_conv_sed_ocn(:,:) + abs(conv_sed_ocn_meth)
+    if (ocn_select(io_O2))    loc_conv_sed_ocn(:,:) = loc_conv_sed_ocn(:,:) + abs(conv_sed_ocn_O)
+    if (ocn_select(io_NO3))   loc_conv_sed_ocn(:,:) = loc_conv_sed_ocn(:,:) + abs(conv_sed_ocn_N)
+    if (ocn_select(io_FeOOH)) loc_conv_sed_ocn(:,:) = loc_conv_sed_ocn(:,:) + abs(conv_sed_ocn_Fe)
+    if (ocn_select(io_SO4))   loc_conv_sed_ocn(:,:) = loc_conv_sed_ocn(:,:) + abs(conv_sed_ocn_S)
+    if (ocn_select(io_CH4))   loc_conv_sed_ocn(:,:) = loc_conv_sed_ocn(:,:) + abs(conv_sed_ocn_meth)
     ! -------------------------------------------------------- !  indexing array (basic oxic-only)
     conv_sed_ocn_i(:,:) = fun_recalc_tracerrelationships_i(conv_sed_ocn(:,:))
     ! -------------------------------------------------------- !
     ! CREATE COMPACT TRACER INDEX FORMAT ARRAY EQUIVALENTS
     ! -------------------------------------------------------- !
     ! -------------------------------------------------------- ! sed -> ocn
-    if (ocn_select(io_O2))  conv_ls_lo(:,:)      =  fun_conv_sedocn2lslo(conv_sed_ocn(:,:))
-    if (ocn_select(io_NO3)) conv_ls_lo_N(:,:)    =  fun_conv_sedocn2lslo(conv_sed_ocn_N(:,:))
-    if (ocn_select(io_SO4)) conv_ls_lo_S(:,:)    =  fun_conv_sedocn2lslo(conv_sed_ocn_S(:,:))
-    if (ocn_select(io_CH4)) conv_ls_lo_meth(:,:) =  fun_conv_sedocn2lslo(conv_sed_ocn_meth(:,:))
+    if (ocn_select(io_O2))    conv_ls_lo(:,:)      =  fun_conv_sedocn2lslo(conv_sed_ocn(:,:))
+    if (ocn_select(io_O2))    conv_ls_lo_O(:,:)    =  fun_conv_sedocn2lslo(conv_sed_ocn_O(:,:))
+    if (ocn_select(io_NO3))   conv_ls_lo_N(:,:)    =  fun_conv_sedocn2lslo(conv_sed_ocn_N(:,:))
+    if (ocn_select(io_FeOOH)) conv_ls_lo_Fe(:,:)   =  fun_conv_sedocn2lslo(conv_sed_ocn_Fe(:,:))
+    if (ocn_select(io_SO4))   conv_ls_lo_S(:,:)    =  fun_conv_sedocn2lslo(conv_sed_ocn_S(:,:))
+    if (ocn_select(io_CH4))   conv_ls_lo_meth(:,:) =  fun_conv_sedocn2lslo(conv_sed_ocn_meth(:,:))
     ! -------------------------------------------------------- !  indexing array (all possible)
     conv_ls_lo_i(:,:) =  fun_conv_sedocn2lslo_i(fun_recalc_tracerrelationships_i(loc_conv_sed_ocn(:,:)))
     ! -------------------------------------------------------- ! POM -> DOM
@@ -1225,8 +1492,10 @@ CONTAINS
     int_u_timeslice(:,:,:,:) = 0.0
     ! integrated time slice storage arrays - diagnostics
     int_diag_bio_timeslice(:,:,:)       = 0.0
-    int_diag_geochem_timeslice(:,:,:,:) = 0.0
-    int_diag_Fe_timeslice(:,:,:,:)      = 0.0
+    int_diag_geochem_old_timeslice(:,:,:,:) = 0.0
+    int_diag_precip_timeslice(:,:,:,:)  = 0.0
+    int_diag_iron_timeslice(:,:,:,:)    = 0.0
+    int_diag_react_timeslice(:,:,:,:)   = 0.0
     int_diag_weather_timeslice(:,:,:)   = 0.0
     int_diag_airsea_timeslice(:,:,:)    = 0.0
     int_diag_redox_timeslice(:,:,:,:)   = 0.0
@@ -1256,9 +1525,14 @@ CONTAINS
     int_focnsed_sig(:)      = 0.0
     int_fsedocn_sig(:)      = 0.0
     int_ocn_sur_sig(:)      = 0.0
+    int_ocn_opn_sig(:)      = 0.0
     int_ocn_ben_sig(:)      = 0.0
     int_carb_sur_sig(:)     = 0.0
+    int_carb_opn_sig(:)     = 0.0
     int_carb_ben_sig(:)     = 0.0
+    int_misc_age_sig        = 0.0
+    int_misc_age_sur_sig    = 0.0
+    int_misc_age_ben_sig    = 0.0
     int_misc_seaice_sig     = 0.0
     int_misc_seaice_sig_th  = 0.0
     int_misc_seaice_sig_vol = 0.0
@@ -1270,15 +1544,22 @@ CONTAINS
     int_misc_det_Fe_tot_sig = 0.0
     int_misc_det_Fe_dis_sig = 0.0
     int_misc_ocn_solfor_sig = 0.0
+    int_misc_opn_solfor_sig = 0.0
     int_misc_ocn_fxsw_sig   = 0.0
+    int_misc_opn_fxsw_sig   = 0.0
     int_ocnsed_sig(:)       = 0.0
     int_diag_bio_sig(:)     = 0.0
-    int_diag_geochem_sig(:) = 0.0
+    int_diag_geochem_old_sig(:) = 0.0
+    int_diag_precip_sig(:)  = 0.0
+    int_diag_iron_sig(:)    = 0.0
+    int_diag_react_sig(:)   = 0.0
     int_diag_weather_sig(:) = 0.0
     int_diag_airsea_sig(:)  = 0.0
     int_diag_misc_2D_sig(:) = 0.0
     int_diag_forcing_sig(:) = 0.0
     int_diag_redox_sig(:)   = 0.0
+    int_diag_ecogem_part    = 0.0 
+    int_diag_ecogem_remin   = 0.0
     ! high resolution 3D! (an exception to the time-series concept that rather spoils things)
     if (ctrl_data_save_3d_sig) int_misc_3D_sig(:,:,:,:) = 0.0
     ! ### ADD ADDITIONAL TIME-SERIES ARRAY INITIALIZATIONS HERE ################################################################## !
@@ -1374,10 +1655,15 @@ CONTAINS
   ! ****************************************************************************************************************************** !
   ! INITIALIZE DIAGNOSTICS ARRAYS
   SUBROUTINE sub_init_diag()
-    diag_bio(:,:,:)       = 0.0
-    diag_geochem(:,:,:,:) = 0.0
-!!!   diag_weather(:,:,:)   = 0.0
-    diag_airsea(:,:,:)    = 0.0
+    diag_bio(:,:,:)           = 0.0
+    diag_geochem_old(:,:,:,:) = 0.0
+    diag_precip(:,:,:,:)      = 0.0
+    diag_react(:,:,:,:)       = 0.0
+    diag_iron(:,:,:,:)        = 0.0
+!!!   diag_weather(:,:,:)      = 0.0
+    diag_airsea(:,:,:)        = 0.0
+    diag_ecogem_part(:,:,:)   = 0.0
+    diag_ecogem_remin(:,:,:)  = 0.0
   END SUBROUTINE sub_init_diag
   ! ****************************************************************************************************************************** !
 
@@ -1609,6 +1895,10 @@ CONTAINS
                          ocn(io,i,j,k) = fun_calc_isotope_abundanceR012ocn(io_Sr_87Sr,io_Sr_88Sr,ocn_init(:),1)
                       elseif (io == io_Sr_88Sr) then
                          ocn(io,i,j,k) = fun_calc_isotope_abundanceR012ocn(io_Sr_87Sr,io_Sr_88Sr,ocn_init(:),2)
+                      elseif (io == io_Os_187Os) then
+                         ocn(io,i,j,k) = ocn_init(io)*ocn_init(io_Os_188Os)*(ocn_init(io_Os)/(1.0+ocn_init(io_Os_188Os)+ocn_init(io)*ocn_init(io_Os_188Os)))
+                      elseif (io == io_Os_188Os) then
+                         ocn(io,i,j,k) = ocn_init(io)*(ocn_init(io_Os)/(1.0+ocn_init(io)+ocn_init(io_Os_187Os)*ocn_init(io)))
                       end if
                    END SELECT
                 end IF
@@ -1920,6 +2210,16 @@ CONTAINS
     opt_select(iopt_select_ocnatm_CO2) = opt_select(iopt_select_carbchem) .AND. atm_select(ia_pCO2)
 
     ! *** parameter consistency check - biological productivity ***
+    ! first ... check for ECOGEM selction
+    If ( flag_ecogem .AND. (par_bio_prodopt /= 'NONE') ) then
+       CALL sub_report_error( &
+            & 'biogem_data','sub_check_par', &
+            & 'If ECOGEM is selcted, par_bio_prodopt must be NONE', &
+            & 'ALTERING INTERNAL PARAMETER VALUE; CONTINUING', &
+            & (/const_real_null/),.false. &
+            & )
+       par_bio_prodopt = 'NONE'
+    end IF
     ! check first-order consistency between biologial option, and selected dissolved and sedimentary tracers
     ! NOTE: only the existence of inconsistency will be highlighted, not exactly what the problem is ...
     SELECT CASE (par_bio_prodopt)
@@ -1962,9 +2262,11 @@ CONTAINS
     case (                    &
          & '3N2T_PNFe_Tdep'   &
          & )
-       IF (.NOT. ocn_select(io_Fe)) loc_flag = .TRUE.
-       IF (.NOT. ocn_select(io_FeL)) loc_flag = .TRUE.
-       IF (.NOT. ocn_select(io_L)) loc_flag = .TRUE.
+       if (.NOT. (ocn_select(io_TDFe) .AND. ocn_select(io_TL)) ) then
+          IF (.NOT. ocn_select(io_Fe)) loc_flag = .TRUE.
+          IF (.NOT. ocn_select(io_FeL)) loc_flag = .TRUE.
+          IF (.NOT. ocn_select(io_L)) loc_flag = .TRUE.       
+       end if
        IF (.NOT. sed_select(is_POFe)) loc_flag = .TRUE.
        IF (.NOT. sed_select(is_POM_Fe)) loc_flag = .TRUE.
     end select
@@ -1979,26 +2281,6 @@ CONTAINS
             & )
        loc_flag = .FALSE.
     end IF
-    If (par_bio_prodopt == 'NONE') then
-       If (ctrl_data_save_sig_diag_bio) then
-          CALL sub_report_error( &
-               & 'biogem_data','sub_check_par', &
-               & 'Selected data saving is redundant in the event of no biological scheme being activated.', &
-               & '[ctrl_data_save_sig_diag_bio] HAS BEEN DE-SELECTED; CONTINUING', &
-               & (/const_real_null/),.false. &
-               & )
-          ctrl_data_save_sig_diag_bio = .FALSE.
-       end IF
-       If (ctrl_data_save_slice_diag_bio) then
-          CALL sub_report_error( &
-               & 'biogem_data','sub_check_par', &
-               & 'Selected data saving is redundant in the event of no biological scheme being activated', &
-               & '[ctrl_data_save_slice_diag_bio] HAS BEEN DE-SELECTED; CONTINUING', &
-               & (/const_real_null/),.false. &
-               & )
-          ctrl_data_save_slice_diag_bio = .FALSE.
-       end IF
-    end if
     ! #### ADD CHECKS OF ADDITIONAL BIOLOGICAL OPTIONS HERE ###################################################################### !
     !
     ! ############################################################################################################################ !
@@ -2077,16 +2359,18 @@ CONTAINS
     ! check Fe cycle self-consistency
     if (ocn_select(io_Fe) .OR. ocn_select(io_TDFe)) then
        SELECT CASE (trim(opt_geochem_Fe))
+       CASE ('OLD','ALT')
+          ! NOTE: do not need to explicitly check for io_Fe (again!)
+          if ((.NOT. ocn_select(io_L)) .OR. (.NOT. ocn_select(io_FeL))) THEN
+             loc_flag = .TRUE.
+          end if
        CASE ('hybrid','lookup_4D')
           ! NOTE: do not need to explicitly check for io_TDFe (again!)
           if (.NOT. ocn_select(io_TL)) THEN
              loc_flag = .TRUE.
           end if
        case default
-          ! NOTE: do not need to explicitly check for io_Fe (again!)
-          if ((.NOT. ocn_select(io_L)) .OR. (.NOT. ocn_select(io_FeL))) THEN
-             loc_flag = .TRUE.
-          end if
+          ! DO BUCKING NOTHING! :)
        end select
        if (loc_flag) then
           CALL sub_report_error( &
@@ -2099,11 +2383,14 @@ CONTAINS
        end if
     end if
     ! check color tracers
-    if (ocn_select(io_colr) .AND. ocn_select(io_colb)) then
-       if (ctrl_bio_preformed .AND. (.NOT. ocn_select(io_col0))) then                 
-          ctrl_force_ocn_age = .false.
-       end if
-    else
+    if (ctrl_force_ocn_age .AND. (.NOT.(ocn_select(io_colr) .AND. ocn_select(io_colb)))) then
+          CALL sub_report_error( &
+               & 'biogem_data','sub_check_par', &
+               & 'Parameter: ctrl_force_ocn_age is selected (true), but the necessary red and blue ocean tracers are not.'// &
+               & 'The automatic age tracer option is hence deselected.', &
+               & 'CONTINUING', &
+               & (/const_real_null/),.FALSE. &
+               & )
        ctrl_force_ocn_age = .false.
     end if
 
@@ -2344,6 +2631,22 @@ CONTAINS
             & (/const_real_null/),.true. &
             & )
     ENDIF
+    If (sed_select(is_FeS2) .AND. (.NOT. sed_select(is_det))) then
+       CALL sub_report_error( &
+            & 'biogem_data','sub_check_par', &
+            & 'If the sediment FeS2 tracer is requested, then the detrital tracer must be selected ', &
+            & 'STOPPING', &
+            & (/const_real_null/),.true. &
+            & )
+    ENDIF
+    If (sed_select(is_FeCO3) .AND. (.NOT. sed_select(is_det))) then
+       CALL sub_report_error( &
+            & 'biogem_data','sub_check_par', &
+            & 'If the sediment FeCO3 tracer is requested, then the detrital tracer must be selected ', &
+            & 'STOPPING', &
+            & (/const_real_null/),.true. &
+            & )
+    ENDIF
     !
     If (sed_select(is_POC) .AND. (.NOT. sed_select(is_POC_frac2))) then
        CALL sub_report_error( &
@@ -2451,6 +2754,54 @@ CONTAINS
        end IF
     end IF
 
+! *** transport matrix paramater consistency checks ***
+    if(ctrl_data_diagnose_TM)THEN
+         if((par_data_TM_start+n_k).gt.par_misc_t_runtime.and.(par_data_TM_start-n_k).gt.0.0)then
+                 call sub_report_error( &
+		         & 'biogem_data','sub_check_par', &
+			 & 'Diagnosing transport matrix will take longer than the run. par_data_TM_start has been set to finish at end of run', &
+			 & '[par_data_TM_start] HAS BEEN CHANGED TO ALLOW MATRIX DIAGNOSIS TO FINISH', &
+			 & (/const_real_null/),.false. &
+			 & )
+                 par_data_TM_start=par_misc_t_runtime-n_k
+         end if
+         if((par_data_TM_start+n_k).gt.par_misc_t_runtime.and.(par_data_TM_start-n_k).lt.0.0)then
+                 call sub_report_error( &
+		         & 'biogem_data','sub_check_par', &
+			 & 'The run is too short to diagnose a full transport matrix', &
+			 & '[ctrl_data_diagnose_TM] HAS BEEN DE-SELECTED; CONTINUING', &
+			 & (/const_real_null/),.false. &
+			 & )
+                 ctrl_data_diagnose_TM=.false.
+         end if
+         if(ctrl_bio_preformed)then
+                 call sub_report_error( &
+		         & 'biogem_data','sub_check_par', &
+			 & 'Diagnosing transport matrix will overwrite preformed tracers', &
+			 & '[ctrl_data_diagnose_TM] HAS BEEN DE-SELECTED; CONTINUING', &
+			 & (/const_real_null/),.false. &
+			 & )
+                 ctrl_data_diagnose_TM=.false.
+         end if
+         if(conv_kocn_kbiogem.gt.1.0)then
+                 call sub_report_error( &
+		         & 'biogem_data','sub_check_par', &
+			 & 'Biogem timestep ratio should not be greater than 1 for a transport matrix', &
+			 & 'STOPPING', &
+			 & (/const_real_null/),.true. &
+			 & )
+         end if
+        if((conv_kocn_ksedgem/par_data_save_slice_n).ne.par_data_TM_avg_n)then ! n.b. conv_ksedgem = n_timesteps!!
+                 call sub_report_error( &
+		         & 'biogem_data','sub_check_par', &
+			 & 'The intra-annual saving intervals you have chosen do not correspond to the transport matrix averaging', &
+			 & '[par_data_save_slice_n] HAS BEEN SET TO MATCH MATRIX AVERAGING INTERVAL', &
+			 & (/const_real_null/),.false. &
+			 & )
+                par_data_save_slice_n=conv_kocn_ksedgem/par_data_TM_avg_n
+         end if
+    end if
+
   END SUBROUTINE sub_check_par_biogem
   ! ****************************************************************************************************************************** !
 
@@ -2512,13 +2863,13 @@ CONTAINS
        ctrl_data_save_slice_ocnatm = .true.
        ctrl_data_save_slice_ocn = .true.
        ctrl_data_save_slice_misc = .true.
-       if (flag_sedgem) ctrl_data_save_slice_ocnsed = .true.
+       ctrl_data_save_slice_ocnsed = .true.
        ctrl_data_save_sig_ocnatm = .true.
        ctrl_data_save_sig_ocn = .true.
        ctrl_data_save_sig_ocn_sur = .true.
        ctrl_data_save_sig_misc = .true.
        ctrl_data_save_GLOBAL = .true.
-       if (flag_sedgem) ctrl_data_save_sig_ocnsed = .true.
+       ctrl_data_save_sig_ocnsed = .true.
     case default
        ! NOTHING
     end select
@@ -2550,7 +2901,7 @@ CONTAINS
        ctrl_data_save_sig_carb_sur = .true.
        ctrl_data_save_sig_diag = .true.
        ctrl_data_save_sig_diag_geochem = .true.
-       if (flag_sedgem) ctrl_data_save_sig_focnsed = .true.
+       ctrl_data_save_sig_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_sig_fsedocn = .true.
     case (5)
        ! BASIC + biology + geochem diagnostics
@@ -2569,7 +2920,7 @@ CONTAINS
        ctrl_data_save_sig_diag = .true.
        ctrl_data_save_sig_diag_bio = .true.
        ctrl_data_save_sig_diag_geochem = .true.
-       if (flag_sedgem) ctrl_data_save_sig_focnsed = .true.
+       ctrl_data_save_sig_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_sig_fsedocn = .true.
     case (6)
        ! BASIC + tracer diagnostics
@@ -2590,7 +2941,7 @@ CONTAINS
        ctrl_data_save_slice_diag_geochem = .true.
        ctrl_data_save_slice_diag_proxy = .true.
        ctrl_data_save_slice_diag_tracer = .true.
-       if (flag_sedgem) ctrl_data_save_slice_focnsed = .true.
+       ctrl_data_save_slice_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_slice_fsedocn = .true.
        ctrl_data_save_sig_carb_sur = .true.
        ctrl_data_save_sig_fexport = .true.
@@ -2599,7 +2950,7 @@ CONTAINS
        ctrl_data_save_sig_diag = .true.
        ctrl_data_save_sig_diag_bio = .true.
        ctrl_data_save_sig_diag_geochem = .true.
-       if (flag_sedgem) ctrl_data_save_sig_focnsed = .true.
+       ctrl_data_save_sig_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_sig_fsedocn = .true.
        ctrl_data_save_derived = .true.
     case (9)
@@ -2622,7 +2973,7 @@ CONTAINS
        ctrl_data_save_sig_focnatm = .true.
        ctrl_data_save_sig_diag = .true.
        ctrl_data_save_sig_diag_geochem = .true.
-       if (flag_sedgem) ctrl_data_save_sig_focnsed = .true.
+       ctrl_data_save_sig_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_sig_fsedocn = .true.
     case (14)
        ! BASIC + FULL geochem diagnostics
@@ -2635,7 +2986,7 @@ CONTAINS
        ctrl_data_save_sig_carb_sur = .true.
        ctrl_data_save_sig_diag = .true.
        ctrl_data_save_sig_diag_geochem = .true.
-       if (flag_sedgem) ctrl_data_save_sig_focnsed = .true.
+       ctrl_data_save_sig_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_sig_fsedocn = .true.
        ctrl_bio_remin_redox_save=.true.
     case (15)
@@ -2655,7 +3006,7 @@ CONTAINS
        ctrl_data_save_sig_diag = .true.
        ctrl_data_save_sig_diag_bio = .true.
        ctrl_data_save_sig_diag_geochem = .true.
-       if (flag_sedgem) ctrl_data_save_sig_focnsed = .true.
+       ctrl_data_save_sig_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_sig_fsedocn = .true.
        ctrl_bio_remin_redox_save=.true.
     case (18)
@@ -2667,7 +3018,7 @@ CONTAINS
        ctrl_data_save_slice_diag_geochem = .true.
        ctrl_data_save_slice_diag_proxy = .true.
        ctrl_data_save_slice_diag_tracer = .true.
-       if (flag_sedgem) ctrl_data_save_slice_focnsed = .true.
+       ctrl_data_save_slice_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_slice_fsedocn = .true.
        ctrl_data_save_sig_carb_sur = .true.
        ctrl_data_save_sig_fexport = .true.
@@ -2676,7 +3027,7 @@ CONTAINS
        ctrl_data_save_sig_diag = .true.
        ctrl_data_save_sig_diag_bio = .true.
        ctrl_data_save_sig_diag_geochem = .true.
-       if (flag_sedgem) ctrl_data_save_sig_focnsed = .true.
+       ctrl_data_save_sig_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_sig_fsedocn = .true.
        ctrl_data_save_derived = .true.
        ctrl_bio_remin_redox_save=.true.
@@ -2698,7 +3049,7 @@ CONTAINS
        ctrl_data_save_slice_diag_proxy = .true.
        ctrl_data_save_slice_diag_tracer = .true.
        if (flag_sedgem) ctrl_data_save_slice_ocnsed = .true.
-       if (flag_sedgem) ctrl_data_save_slice_focnsed = .true.
+       ctrl_data_save_slice_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_slice_fsedocn = .true.
        ctrl_data_save_sig_ocnatm = .true.
        ctrl_data_save_sig_ocn = .true.
@@ -2709,10 +3060,12 @@ CONTAINS
        ctrl_data_save_sig_carb_sur = .true.
        ctrl_data_save_sig_misc = .true.
        ctrl_data_save_sig_diag = .true.
+       ctrl_data_save_sig_diag_bio = .true.
+       ctrl_data_save_sig_diag_geochem = .true.
        ctrl_data_save_derived = .true.
        ctrl_data_save_GLOBAL = .true.
        if (flag_sedgem) ctrl_data_save_sig_ocnsed = .true.
-       if (flag_sedgem) ctrl_data_save_sig_focnsed = .true.
+       ctrl_data_save_sig_focnsed = .true.
        if (flag_sedgem) ctrl_data_save_sig_fsedocn = .true.
        ctrl_bio_remin_redox_save=.true.
     case default
@@ -2740,6 +3093,14 @@ CONTAINS
          & ) THEN
        ctrl_data_save_inversion = .true.
     end IF
+
+    ! determine if no biology at all
+    If ((par_bio_prodopt == 'NONE') .AND. (.NOT. flag_ecogem)) then
+       ctrl_data_save_slice_bio      = .false.
+       ctrl_data_save_slice_diag_bio = .false.
+       ctrl_data_save_sig_fexport    = .false.
+       ctrl_data_save_sig_diag_bio   = .false.
+    end if
 
   END SUBROUTINE sub_adj_par_save
   ! ****************************************************************************************************************************** !
@@ -3011,40 +3372,52 @@ CONTAINS
     ! -------------------------------------------------------- !
     INTEGER::ios
     CHARACTER(len=255)::loc_filename                           ! filename string
-    CHARACTER(len=255)::loc_str                                ! 
-    CHARACTER(len=6)::loc_locstr                               ! 
+    CHARACTER(len=255)::loc_str                                !
+    CHARACTER(len=6)::loc_locstr                               !
     integer::nloc,nvar
     integer::loc_len,loc_pos
     real::loc_t = 0.0
     ! -------------------------------------------------------- !
     ! INITIALIZE ARRAYS
-    ! -------------------------------------------------------- ! 
+    ! -------------------------------------------------------- !
     ! -------------------------------------------------------- ! allocate time array
     ALLOCATE(orb_pts_time(1:n_orb_pts_nmax),STAT=alloc_error)
-    call check_iostat(alloc_error,__LINE__,__FILE__)    
+    call check_iostat(alloc_error,__LINE__,__FILE__)
     orb_pts_time(:) = 0.0
     ! -------------------------------------------------------- ! determine loc array size
-    loc_filename = TRIM(par_indir_name)//TRIM(par_infile_orb_pts_loc_name)
-    n_orb_pts_nloc = fun_calc_data_n(loc_filename)
+    if (n_orb_pts_nmax > 0) then
+       loc_filename = TRIM(par_indir_name)//TRIM(par_infile_orb_pts_loc_name)
+       n_orb_pts_nloc = fun_calc_data_n(loc_filename)
+    else
+       n_orb_pts_nloc = 0
+    end if
     ! -------------------------------------------------------- ! allocate loc array
     ALLOCATE(orb_pts_loc(1:n_orb_pts_nloc,2),STAT=alloc_error)
-    call check_iostat(alloc_error,__LINE__,__FILE__)    
+    call check_iostat(alloc_error,__LINE__,__FILE__)
     ! -------------------------------------------------------- ! load loc data
-    call sub_load_data_npt(loc_filename,n_orb_pts_nloc,orb_pts_loc)        
+    if (n_orb_pts_nloc > 0) then
+       call sub_load_data_npt(loc_filename,n_orb_pts_nloc,orb_pts_loc)
+    end if
     ! -------------------------------------------------------- ! determine var array size
-    loc_filename = TRIM(par_indir_name)//TRIM(par_infile_orb_pts_var_name)
-    n_orb_pts_nvar = fun_calc_data_n(loc_filename)
+    if (n_orb_pts_nmax > 0) then
+       loc_filename = TRIM(par_indir_name)//TRIM(par_infile_orb_pts_var_name)
+       n_orb_pts_nvar = fun_calc_data_n(loc_filename)
+    else
+       n_orb_pts_nvar = 0
+    end if
     ! -------------------------------------------------------- ! allocate var array
     ALLOCATE(orb_pts_var(1:n_orb_pts_nvar),STAT=alloc_error)
-    call check_iostat(alloc_error,__LINE__,__FILE__)    
+    call check_iostat(alloc_error,__LINE__,__FILE__)
     ! -------------------------------------------------------- ! load var data
-    call sub_load_data_nstr(loc_filename,n_orb_pts_nvar,orb_pts_var)    
+    if (n_orb_pts_nvar > 0) then
+       call sub_load_data_nstr(loc_filename,n_orb_pts_nvar,orb_pts_var)
+    end if
     ! -------------------------------------------------------- ! allocate results array
     ! n_orb_ptse_nmax == number of orbital data points
     ! n_orb_ptse_nloc == number of orbital data point locations
     ! n_orb_ptse_nvar == number of orbital data point variables
     ALLOCATE(orb_pts(1:n_orb_pts_nmax,1:n_orb_pts_nloc,1:n_orb_pts_nvar),STAT=alloc_error)
-    call check_iostat(alloc_error,__LINE__,__FILE__) 
+    call check_iostat(alloc_error,__LINE__,__FILE__)
     ! zero array
     orb_pts(:,:,:) = 0.0
     ! -------------------------------------------------------- !
@@ -3052,8 +3425,8 @@ CONTAINS
     ! -------------------------------------------------------- !
     ! -------------------------------------------------------- ! create header
     loc_pos = 1
-    loc_str(loc_pos:loc_pos+5) = '% year'  
-    loc_pos = loc_pos+6  
+    loc_str(loc_pos:loc_pos+5) = '% year'
+    loc_pos = loc_pos+6
     DO nvar=1,n_orb_pts_nvar
        loc_str(loc_pos:loc_pos+2) = ' / '
        loc_pos = loc_pos+3
@@ -3063,10 +3436,10 @@ CONTAINS
     end do
     ! pad string array to make it happy
     loc_str(loc_pos:255) = ''
-    ! -------------------------------------------------------- ! create files    
+    ! -------------------------------------------------------- ! create files
     DO nloc=1,n_orb_pts_nloc
        loc_locstr = 'i'//fun_conv_num_char_n(2,orb_pts_loc(nloc,1))//'j'//fun_conv_num_char_n(2,orb_pts_loc(nloc,2))
-       loc_filename=fun_data_timeseries_filename( & 
+       loc_filename=fun_data_timeseries_filename( &
             & loc_t,par_outdir_name,trim(par_outfile_name)//'_orb',loc_locstr,string_results_ext)
        call check_unit(out,__LINE__,__FILE__)
        OPEN(unit=out,file=loc_filename,action='write',status='replace',iostat=ios)
